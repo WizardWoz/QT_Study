@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FirstProject", "FirstProject.vcxproj", "{3B73FD01-AA63-47EB-B8B0-D3939CCB8EC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FirstCPro", "..\FirstCPro\FirstCPro.vcxproj", "{BB8F05C0-0896-4EFB-AB31-C43EE30B88DB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FirstC++Pro", "..\FirstC++Pro\FirstC++Pro.vcxproj", "{9C47C552-5AED-47AA-BC04-72C491B6DFEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{3B73FD01-AA63-47EB-B8B0-D3939CCB8EC8}.Debug|x64.Build.0 = Debug|x64
 		{3B73FD01-AA63-47EB-B8B0-D3939CCB8EC8}.Release|x64.ActiveCfg = Release|x64
 		{3B73FD01-AA63-47EB-B8B0-D3939CCB8EC8}.Release|x64.Build.0 = Release|x64
+		{BB8F05C0-0896-4EFB-AB31-C43EE30B88DB}.Debug|x64.ActiveCfg = Debug|x64
+		{BB8F05C0-0896-4EFB-AB31-C43EE30B88DB}.Debug|x64.Build.0 = Debug|x64
+		{BB8F05C0-0896-4EFB-AB31-C43EE30B88DB}.Release|x64.ActiveCfg = Release|x64
+		{BB8F05C0-0896-4EFB-AB31-C43EE30B88DB}.Release|x64.Build.0 = Release|x64
+		{9C47C552-5AED-47AA-BC04-72C491B6DFEC}.Debug|x64.ActiveCfg = Debug|x64
+		{9C47C552-5AED-47AA-BC04-72C491B6DFEC}.Debug|x64.Build.0 = Debug|x64
+		{9C47C552-5AED-47AA-BC04-72C491B6DFEC}.Release|x64.ActiveCfg = Release|x64
+		{9C47C552-5AED-47AA-BC04-72C491B6DFEC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
