@@ -2,9 +2,49 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <string>
 #include "cir.h"
 
 using namespace std;
+
+// 通过C语言结构体引入C++的类：C++下的汽车类
+class Car
+{
+public:
+	string color;    //车辆颜色
+	string brand;    //车辆品牌
+	string type;     //车辆类型
+	int year;       //车辆年份
+	//其实也是成员变量，并非真正的成员函数
+	void (*printCarInfo)(string color, string brand, string type, int year);     //函数指针，指向车辆介绍函数
+	void (*carRun)(char* type);       //函数指针，指向车辆行驶函数
+	void (*carStop)(char* type);      //函数指针，指向车辆停止函数
+	//声明成员函数；成员函数可以直接访问类的成员变量
+	void realPrintCarInfo();
+};
+
+//::是作用域解析运算符，用于访问类的成员函数或变量
+void Car::realPrintCarInfo() {
+	string str = "车的品牌是：" + brand + "，型号是：" + type + "，颜色是：" + color + "，上市年份是：" + to_string(year);
+	cout << "成员函数打印：" << str << endl;
+}
+
+void PrintCarInfo(string color, string brand, string type, int year)
+{
+	//printf("%s",指针)
+	string str = "车的品牌是：" + brand + "，型号是：" + type + "，颜色是：" + color + "，上市年份是：" + to_string(year);
+	cout << str << endl;
+}
+
+void carRun()
+{
+	printf("The car is running.\n");
+}
+
+void carStop()
+{
+	printf("The car has stopped.\n");
+}
 
 bool compare(int a, int b) {
 	return a > b;
@@ -91,5 +131,24 @@ int main() {
 	});
 	cout << maxVal << " is the maximum value between " << x << " and " << y << endl;
 	cout << maxValLambda << " is the maximum value between " << x << " and " << y << " (using lambda)" << endl;
+
+	// 直接建立struct Car的实例（没问题）
+	/*struct Car BMWThreeSeries;
+	BMWThreeSeries.color = "Black";
+	BMWThreeSeries.brand = "BMW";
+	BMWThreeSeries.type = "Sedan";
+	BMWThreeSeries.year = 2023;
+	BMWThreeSeries.printCarInfo = PrintCarInfo;
+	BMWThreeSeries.printCarInfo(BMWThreeSeries.color, BMWThreeSeries.brand, BMWThreeSeries.type, BMWThreeSeries.year);*/
+	// 通过malloc动态分配内存建立struct Car的实例（出现问题），所以转换成C++面向对象的类
+	Car* AudiA6 = new Car();
+	AudiA6->color = "White";
+	AudiA6->brand = "Audi";
+	AudiA6->type = "Sedan";
+	AudiA6->year = 2022;
+	AudiA6->printCarInfo = PrintCarInfo;
+	AudiA6->printCarInfo(AudiA6->color, AudiA6->brand, AudiA6->type, AudiA6->year);
+	AudiA6->realPrintCarInfo();
+	delete AudiA6;
     return 0;
 }
