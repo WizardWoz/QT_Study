@@ -21,12 +21,24 @@
     <ClCompile Include="car.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="bank.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="overload.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cir.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="car.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="bank.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="overload.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

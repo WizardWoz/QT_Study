@@ -3,72 +3,13 @@
 #include <stdbool.h>
 #include <limits.h>
 #include "car.h"
+#include "bank.h"
+#include "overload.h"
 #include "cir.h"
 
 using namespace std;
 
-/*
-  银行的账户是一个类，包含存款人的个人信息和额度，视作private修饰的私有变量；具体的存款人视作一个对象，不能私自修改账户信息，需要公有的操作流程，
-  也就是public修饰的公有函数去操作private修饰的私有变量
-*/
-class BankAccount
-{
-private:
-	string name;    //账户名
-	string addr;	//账户地址
-	int age;	   //账户年龄
-	double balance; //账户余额
-public:
-	void registerAccount(string newName,string newAddr,int age,double balance); //注册账户
-	void withdraw(double amount);	//取款
-	void deposit(double amount);	//存款
-	double getBalance();	//获取余额
-	void printAccountInfo();
-};
-
-void BankAccount::registerAccount(string newName, string newAddr, int newAge, double newBalance) {
-	name = newName;
-	addr = newAddr;
-	age = newAge;
-	balance = newBalance;
-}
-
-void BankAccount::withdraw(double amount) {
-	if (amount>balance)
-	{
-		cerr << "取款不成功，取款金额大于账户余额" << endl;
-	}
-	else if (amount<=0)
-	{
-		std::cerr << "取款不成功，取款金额必须为正数" << std::endl;
-	}
-	else
-	{
-		balance -= amount;
-	}
-}
-
-void BankAccount::deposit(double amount) {
-	if (amount>0)
-	{
-		balance += amount;
-	}
-	else
-	{
-		cerr << "存款不成功，存款金额必须为正数" << endl;
-	}
-}
-
-double BankAccount::getBalance() {
-	return balance;
-}
-
-void BankAccount::printAccountInfo() {
-	string str = "账户名：" + name + "，账户地址：" + addr + "，账户年龄：" + to_string(age) + "，账户余额：" + to_string(balance);
-	cout << str << endl;
-}
-
-bool compare(int a, int b) {
+static bool compare(int a, int b) {
 	return a > b;
 }
 
@@ -82,6 +23,16 @@ int getMax(int a, int b, bool (*cmp)(int, int)) {
 	} else {
 		return b;
 	}
+}
+
+double vals[] = { 10.1,12.6,33.1,24.1,50.0 };
+
+//当函数返回值为一个引用时，函数可以作为表达式左值
+double& setvalues(int i) {
+	double& ref = vals[i];
+	return ref; //返回数组中第i个元素的引用
+	//要注意不能引用函数内部的局部变量，因为局部变量的栈空间在函数结束后会自动销毁
+	//如果需要返回一个引用，必须确保引用的对象在函数调用结束后仍然存在；例如：全局变量，static变量，或动态分配的内存
 }
 
 int main() {
@@ -188,5 +139,47 @@ int main() {
 	account.withdraw(200.0);
 	account.printAccountInfo();
 	cout << "单独获取账户余额：" << account.getBalance() << endl;
+
+	//引用作为返回值
+	cout << "改变前的值：";
+	for (int i = 0; i < 5; i++)
+	{
+		cout << vals[i] << " ";
+	}
+	cout << endl;
+	setvalues(0) = 20.0; //通过引用修改数组中的第一个元素
+	setvalues(2) = 25.3; //通过引用修改数组中的第三个元素
+	cout << "改变后的值：";
+	for (int i = 0; i < 5; i++)
+	{
+		cout << vals[i] << " ";
+	}
+	cout << endl;
+
+	Data data;
+	// 调用重载的print函数
+	data.print(42);            // 调用print(int)
+	data.print(3.14);         // 调用print(double)
+	data.print("Hello");      // 调用print(const char*)
+
+	Person person1, person2;
+	person1.name = "Alice";
+	person1.age = 30;
+	person2.name = "Alice";
+	person2.age = 30;
+	// 重载==运算符比较Person对象
+	// 注意：需要在Person类中定义operator==函数来实现自定义的比较逻辑;这里假设已经定义了operator==函数，比较name和age是否相等
+	// 如果没有定义，则默认按地址比较
+	bool ret = person1 == person2;
+	cout << "Are person1 and person2 equal? " << (ret ? "Yes" : "No") << endl;
+
+	Point point1, point2, point3;
+	point1.x = 10;
+	point1.y = 20;
+	point2.x = 10;
+	point2.y = 20;
+	//重载运算符 + 实现两个Point对象的相加
+	point3 = point1 + point2;
+	cout << "point1 + point2 = (" << point3.x << ", " << point3.y << ")" << endl;
     return 0;
 }
