@@ -18,9 +18,15 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="car.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cir.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="car.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

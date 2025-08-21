@@ -2,48 +2,70 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <limits.h>
-#include <string>
+#include "car.h"
 #include "cir.h"
 
 using namespace std;
 
-// 通过C语言结构体引入C++的类：C++下的汽车类
-class Car
+/*
+  银行的账户是一个类，包含存款人的个人信息和额度，视作private修饰的私有变量；具体的存款人视作一个对象，不能私自修改账户信息，需要公有的操作流程，
+  也就是public修饰的公有函数去操作private修饰的私有变量
+*/
+class BankAccount
 {
+private:
+	string name;    //账户名
+	string addr;	//账户地址
+	int age;	   //账户年龄
+	double balance; //账户余额
 public:
-	string color;    //车辆颜色
-	string brand;    //车辆品牌
-	string type;     //车辆类型
-	int year;       //车辆年份
-	//其实也是成员变量，并非真正的成员函数
-	void (*printCarInfo)(string color, string brand, string type, int year);     //函数指针，指向车辆介绍函数
-	void (*carRun)(char* type);       //函数指针，指向车辆行驶函数
-	void (*carStop)(char* type);      //函数指针，指向车辆停止函数
-	//声明成员函数；成员函数可以直接访问类的成员变量
-	void realPrintCarInfo();
+	void registerAccount(string newName,string newAddr,int age,double balance); //注册账户
+	void withdraw(double amount);	//取款
+	void deposit(double amount);	//存款
+	double getBalance();	//获取余额
+	void printAccountInfo();
 };
 
-//::是作用域解析运算符，用于访问类的成员函数或变量
-void Car::realPrintCarInfo() {
-	string str = "车的品牌是：" + brand + "，型号是：" + type + "，颜色是：" + color + "，上市年份是：" + to_string(year);
-	cout << "成员函数打印：" << str << endl;
+void BankAccount::registerAccount(string newName, string newAddr, int newAge, double newBalance) {
+	name = newName;
+	addr = newAddr;
+	age = newAge;
+	balance = newBalance;
 }
 
-void PrintCarInfo(string color, string brand, string type, int year)
-{
-	//printf("%s",指针)
-	string str = "车的品牌是：" + brand + "，型号是：" + type + "，颜色是：" + color + "，上市年份是：" + to_string(year);
+void BankAccount::withdraw(double amount) {
+	if (amount>balance)
+	{
+		cerr << "取款不成功，取款金额大于账户余额" << endl;
+	}
+	else if (amount<=0)
+	{
+		std::cerr << "取款不成功，取款金额必须为正数" << std::endl;
+	}
+	else
+	{
+		balance -= amount;
+	}
+}
+
+void BankAccount::deposit(double amount) {
+	if (amount>0)
+	{
+		balance += amount;
+	}
+	else
+	{
+		cerr << "存款不成功，存款金额必须为正数" << endl;
+	}
+}
+
+double BankAccount::getBalance() {
+	return balance;
+}
+
+void BankAccount::printAccountInfo() {
+	string str = "账户名：" + name + "，账户地址：" + addr + "，账户年龄：" + to_string(age) + "，账户余额：" + to_string(balance);
 	cout << str << endl;
-}
-
-void carRun()
-{
-	printf("The car is running.\n");
-}
-
-void carStop()
-{
-	printf("The car has stopped.\n");
 }
 
 bool compare(int a, int b) {
@@ -141,14 +163,30 @@ int main() {
 	BMWThreeSeries.printCarInfo = PrintCarInfo;
 	BMWThreeSeries.printCarInfo(BMWThreeSeries.color, BMWThreeSeries.brand, BMWThreeSeries.type, BMWThreeSeries.year);*/
 	// 通过malloc动态分配内存建立struct Car的实例（出现问题），所以转换成C++面向对象的类
-	Car* AudiA6 = new Car();
+	Car* AudiA6 = new Car();	//new动态分配内存给Car车辆实例
 	AudiA6->color = "White";
 	AudiA6->brand = "Audi";
 	AudiA6->type = "Sedan";
+	AudiA6->wheel.brand = "Michelin"; //设置轮胎品牌
+	AudiA6->wheel.year = "2022"; //设置轮胎年份
+	AudiA6->engine = new Engine; //new动态分配内存给引擎
+	AudiA6->engine->brand = "Audi Engine"; //设置引擎品牌
+	AudiA6->engine->year = "2022"; //设置引擎年份
 	AudiA6->year = 2022;
-	AudiA6->printCarInfo = PrintCarInfo;
-	AudiA6->printCarInfo(AudiA6->color, AudiA6->brand, AudiA6->type, AudiA6->year);
+	//面向过程版本
+	//AudiA6->printCarInfo = PrintCarInfo;
+	//AudiA6->printCarInfo(AudiA6->color, AudiA6->brand, AudiA6->type, AudiA6->year);
+	//面向对象版本
 	AudiA6->realPrintCarInfo();
 	delete AudiA6;
+
+	BankAccount account;
+	account.registerAccount("Alice", "123 Main St", 30, 1000.0);
+	account.printAccountInfo();
+	account.deposit(500.0);
+	account.printAccountInfo();
+	account.withdraw(200.0);
+	account.printAccountInfo();
+	cout << "单独获取账户余额：" << account.getBalance() << endl;
     return 0;
 }
