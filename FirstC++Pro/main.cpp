@@ -114,7 +114,7 @@ int main() {
 	BMWThreeSeries.printCarInfo = PrintCarInfo;
 	BMWThreeSeries.printCarInfo(BMWThreeSeries.color, BMWThreeSeries.brand, BMWThreeSeries.type, BMWThreeSeries.year);*/
 	// 通过malloc动态分配内存建立struct Car的实例（出现问题），所以转换成C++面向对象的类
-	Car* AudiA6 = new Car();	//new动态分配内存给Car车辆实例
+	Car* AudiA6 = new Car();	//new动态分配内存给Car车辆实例，调用无参构造函数
 	AudiA6->color = "White";
 	AudiA6->brand = "Audi";
 	AudiA6->type = "Sedan";
@@ -124,6 +124,11 @@ int main() {
 	AudiA6->engine->brand = "Audi Engine"; //设置引擎品牌
 	AudiA6->engine->year = "2022"; //设置引擎年份
 	AudiA6->year = 2022;
+	//直接创建一个Car类的实例，调用带参数构造函数
+	Car BenzCClass("Benz",2025);
+	Car& BMWFiveSeries = *new Car("BMW", 2024); //创建一个BMW五系的实例，使用引用
+	Car* TeslaModelS = new Car("Tesla"); //创建一个Tesla Model S的实例，使用指针
+	delete TeslaModelS; //释放Tesla Model S的内存
 	//面向过程版本
 	//AudiA6->printCarInfo = PrintCarInfo;
 	//AudiA6->printCarInfo(AudiA6->color, AudiA6->brand, AudiA6->type, AudiA6->year);
@@ -131,14 +136,30 @@ int main() {
 	AudiA6->realPrintCarInfo();
 	delete AudiA6;
 
-	BankAccount account;
-	account.registerAccount("Alice", "123 Main St", 30, 1000.0);
-	account.printAccountInfo();
-	account.deposit(500.0);
-	account.printAccountInfo();
-	account.withdraw(200.0);
-	account.printAccountInfo();
-	cout << "单独获取账户余额：" << account.getBalance() << endl;
+	//new分配单个对象
+	Car* car1 = new Car();
+	//new分配数组对象
+	int* arr = new int[5] {1, 2, 3, 4, 5};
+	delete[] arr; //释放数组内存
+	delete car1; //释放单个对象内存
+
+	BankAccount account1;
+	cout << "main函数中BankAccount account1对象的地址：" << &account1 << endl;
+	account1.registerAccount("Alice", "123 Main St", 30, 1000.0);
+	account1.printAccountInfo();
+	account1.deposit(500.0);
+	account1.printAccountInfo();
+	account1.withdraw(200.0);
+	account1.printAccountInfo();
+	cout << "单独获取账户余额：" << account1.getBalance() << endl;
+	//实现链式调用
+	account1.setAge(32).printAccountInfo(); //设置年龄为32，并打印账户信息
+	BankAccount account2; //创建另一个BankAccount对象
+	cout << "main函数中BankAccount account2对象的地址：" << &account2 << endl;
+	//有参构造函数
+	BankAccount* account3 = new BankAccount(10);
+	delete account3;
+	//当main()函数执行完毕，account1、account2的生命周期结束（即对象的作用域结束），自动调用析构函数
 
 	//引用作为返回值
 	cout << "改变前的值：";
@@ -156,11 +177,28 @@ int main() {
 	}
 	cout << endl;
 
-	Data data;
+	cout << "创建Data类的data实例前的numOfInstances值：" << Data::numOfInstances << endl;
+	Data* data=new Data;
+	cout << "创建Data类的data实例后的numOfInstances值：" << Data::numOfInstances << endl;
 	// 调用重载的print函数
-	data.print(42);            // 调用print(int)
-	data.print(3.14);         // 调用print(double)
-	data.print("Hello");      // 调用print(const char*)
+	data->print(42);		   // 调用print(int)
+	data->print(3.14);         // 调用print(double)
+	data->print("Hello");      // 调用print(const char*)
+	Data::staticval = 100; // 设置静态成员变量的值
+	delete data; // 删除Data类的实例，调用析构函数
+	cout << "删除Data类的data实例后的numOfInstances值：" << Data::numOfInstances << endl;
+	// 调用静态成员变量
+	cout << "Data类的静态成员变量staticval：" << Data::staticval << endl;
+	// 调用静态成员函数
+	cout << "Data类的静态成员函数getStaticVal()返回值：" << Data::getStaticVal() << endl;
+	Data data1;
+	Data data2;
+	cout << "在全局作用域内创建的data1对象，numOfInstances值：" << Data::numOfInstances << endl;
+	{
+		Data data3; // 局部变量，作用域结束后会自动调用析构函数
+		cout << "在局部作用域内创建的data3对象，numOfInstances值：" << Data::numOfInstances << endl;
+	}
+	cout << "在全局作用域内创建的data2对象，numOfInstances值：" << Data::numOfInstances << endl;
 
 	Person person1, person2;
 	person1.name = "Alice";

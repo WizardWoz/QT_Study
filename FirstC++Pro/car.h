@@ -32,6 +32,11 @@ public:
 	int year;       //车辆年份
 	Wheel wheel;    //轮胎对象
 	Engine* engine; //引擎对象指针，使用指针可以动态分配内存，避免拷贝开销
+
+	//构造函数
+	Car(); //构造函数声明，初始化成员变量和函数指针
+	Car(string); //构造函数重载，允许直接设置品牌
+	Car(string brand, int year); //构造函数重载，允许直接设置品牌和年份
 	//其实也是成员变量，并非真正的成员函数
 	void (*printCarInfo)(string color, string brand, string type, int year);     //函数指针，指向车辆介绍函数
 	void (*carRun)(char* type);       //函数指针，指向车辆行驶函数

@@ -39,3 +39,63 @@ void carStop()
 {
 	printf("The car has stopped.\n");
 }
+
+/*
+  Car汽车类的无参构造函数
+  使用了成员变量初始化列表: engine(nullptr)，初始化成员变量和函数指针；
+  直接在对象的构造过程中被复制，而不是先创建成员变量后赋值，提高了性能
+*/
+Car::Car() {
+	cout << "Car类的无参数构造函数被调用。" << endl;
+	//构造函数初始化成员变量
+	color = "Unknown";
+	brand = "Unknown";
+	type = "Unknown";
+	year = 0;
+	engine = nullptr; //引擎指针初始化为nullptr，表示未设置引擎
+	printCarInfo = PrintCarInfo; //初始化函数指针
+	carRun = carRun; //初始化车辆行驶函数指针
+	carStop = carStop; //初始化车辆停止函数指针
+}
+
+/*
+  Car汽车类的有参构造函数
+  使用了成员变量初始化列表: brand(brand), year(year), engine(nullptr)，初始化成员变量和函数指针；
+*/
+Car::Car(string brand, int year) : brand(brand), year(year), engine(nullptr) {
+	cout << "Car类的带参数构造函数被调用。" << endl;
+	//构造函数初始化成员变量
+	color = "Unknown";
+	type = "Unknown";
+	printCarInfo = PrintCarInfo; //初始化函数指针
+	carRun = carRun; //初始化车辆行驶函数指针
+	carStop = carStop; //初始化车辆停止函数指针
+}
+
+//实际和成员变量初始化列表: brand(brand), year(year), engine(nullptr)效果一样，
+// 所以编译阶段报错：C2084 函数“Car::Car(std::string,int)”已有主体
+//Car::Car(string brand, int year) : engine(nullptr) {
+//	cout << "Car类的带参数构造函数被调用。" << endl;
+//	//构造函数初始化成员变量
+//	color = "Unknown";
+// C++的this指针指向当前对象实例，可以用来访问类的成员变量和成员函数
+//	this->brand = brand; //使用this指针访问成员变量
+//	type = "Unknown";
+//	this->year = year;
+//	printCarInfo = PrintCarInfo; //初始化函数指针
+//	carRun = carRun; //初始化车辆行驶函数指针
+//	carStop = carStop; //初始化车辆停止函数指针
+//}
+
+Car::Car(string brand) : engine(nullptr) {
+	cout << "Car类的带参数构造函数被调用。" << endl;
+	//构造函数初始化成员变量
+	color = "Unknown";
+	//C++的this指针指向当前对象实例，可以用来访问类的成员变量和成员函数
+	this->brand = brand; //使用this指针访问成员变量
+	type = "Unknown";
+	year = 0;
+	printCarInfo = PrintCarInfo; //初始化函数指针
+	carRun = carRun; //初始化车辆行驶函数指针
+	carStop = carStop; //初始化车辆停止函数指针
+}
