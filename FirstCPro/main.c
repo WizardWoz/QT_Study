@@ -14,6 +14,13 @@ struct Car
 	void (*carStop)(char* type);      //函数指针，指向车辆停止函数
 };
 
+struct Roadster
+{
+	struct Car baseCar;
+	void (*openTopped)();  //函数指针，指向敞篷车开顶函数
+	void (*pDrifting)();  //函数指针，指向敞篷车漂移函数
+};
+
 void PrintCarInfo(char* color, char* brand, char* type, int year)
 {
 	//printf("%s",指针)
@@ -60,5 +67,14 @@ int main() {
 	AudiA6->printCarInfo = PrintCarInfo;
 	AudiA6->printCarInfo(AudiA6->color, AudiA6->brand, AudiA6->type, AudiA6->year);
 	free(AudiA6);
+
+	struct Roadster TeslaRoadster;
+	TeslaRoadster.baseCar.color = "Red";
+	TeslaRoadster.baseCar.brand = "Tesla";
+	TeslaRoadster.baseCar.type = "Roadster";
+	TeslaRoadster.baseCar.year = 2024;
+	TeslaRoadster.baseCar.printCarInfo = PrintCarInfo;
+	TeslaRoadster.baseCar.printCarInfo(TeslaRoadster.baseCar.color, TeslaRoadster.baseCar.brand, TeslaRoadster.baseCar.type, TeslaRoadster.baseCar.year);
+	
     return 0;
 }

@@ -10,19 +10,6 @@ void Engine::enginePrintInfo() {
 	cout << "引擎信息打印：" << str << endl;
 }
 
-//::是作用域解析运算符，用于访问类的成员函数或变量
-void Car::realPrintCarInfo() {
-	string str = "车的品牌是：" + brand + "，型号是：" + type + "，颜色是：" + color + "，上市年份是：" + to_string(year);
-	cout << "成员函数打印：" << str << endl;
-	wheel.wheelPrintInfo(); //调用轮胎的成员函数
-	if (engine != nullptr) {
-		engine->enginePrintInfo(); //调用引擎的成员函数
-	}
-	else {
-		cout << "引擎信息未设置。" << endl;
-	}
-}
-
 void PrintCarInfo(string color, string brand, string type, int year)
 {
 	//printf("%s",指针)
@@ -98,4 +85,26 @@ Car::Car(string brand) : engine(nullptr) {
 	printCarInfo = PrintCarInfo; //初始化函数指针
 	carRun = carRun; //初始化车辆行驶函数指针
 	carStop = carStop; //初始化车辆停止函数指针
+}
+
+//::是作用域解析运算符，用于访问类的成员函数或变量
+
+void Car::realPrintCarInfo() {
+	string str = "车的品牌是：" + brand + "，型号是：" + type + "，颜色是：" + color + "，上市年份是：" + to_string(year);
+	cout << "成员函数打印：" << str << endl;
+	wheel.wheelPrintInfo(); //调用轮胎的成员函数
+	if (engine != nullptr) {
+		engine->enginePrintInfo(); //调用引擎的成员函数
+	}
+	else {
+		cout << "引擎信息未设置。" << endl;
+	}
+}
+
+void Roadster::openTopped() {
+	cout << "敞篷车开顶功能被调用。" << endl;
+}
+
+void Roadster::pDrifting() {
+	cout << "敞篷车漂移功能被调用。" << endl;
 }

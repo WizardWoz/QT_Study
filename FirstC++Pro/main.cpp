@@ -5,6 +5,7 @@
 #include "car.h"
 #include "bank.h"
 #include "overload.h"
+#include "animal.h"
 #include "cir.h"
 
 using namespace std;
@@ -219,5 +220,22 @@ int main() {
 	//重载运算符 + 实现两个Point对象的相加
 	point3 = point1 + point2;
 	cout << "point1 + point2 = (" << point3.x << ", " << point3.y << ")" << endl;
+
+	Roadster myRoadster;
+	//myRoadster.color = "Red";	//父类的私有成员不能被子类访问
+	myRoadster.brand = "Tesla";	//设置成public公有继承后，子类可以访问父类的公有成员
+	myRoadster.openTopped();
+	myRoadster.pDrifting();
+
+	Lion lion("Simba", 5, 30);
+	lion.makeSound();
+	lion.eatFood();
+	lion.hunt();
+	lion.accessProtectedData(); // 访问Animal类的protected成员
+	lion.accessPublicData(); // 访问Animal类的public成员
+	lion.accessPrivateData(); // 访问Animal类的private成员，通过Animal类的公有成员函数访问
+	Rabbit rabbit("Bunny", 3);
+	rabbit.accessProtectedData(); // 访问Animal类的protected成员
+	rabbit.accessPublicData(); // 访问Animal类的public成员
     return 0;
 }
