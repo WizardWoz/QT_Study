@@ -6,6 +6,7 @@
 #include "bank.h"
 #include "overload.h"
 #include "animal.h"
+#include "multiderive.h"
 #include "cir.h"
 
 using namespace std;
@@ -235,7 +236,24 @@ int main() {
 	lion.accessPublicData(); // 访问Animal类的public成员
 	lion.accessPrivateData(); // 访问Animal类的private成员，通过Animal类的公有成员函数访问
 	Rabbit rabbit("Bunny", 3);
+	rabbit.makeSound();
 	rabbit.accessProtectedData(); // 访问Animal类的protected成员
 	rabbit.accessPublicData(); // 访问Animal类的public成员
+	Animal* animalPtr1=new Lion("Simba", 5, 30); //基类指针
+	animalPtr1->makeSound(); // 调用派生类的重写函数
+	animalPtr1->jump();	// 调用派生类的重写函数
+	//基类指针只能指向公有继承的派生类对象，不能指向保护继承或私有继承的派生类对象
+	//Animal* animalPtr2 = new Rabbit("Bunny", 3); //报错：“类型强制转换”: 从“Rabbit *”到“Animal *”的转换存在，但无法访问
+	//animalPtr2->makeSound(); // 调用派生类的重写函数
+	delete animalPtr1; //释放内存，调用派生类的析构函数
+	//delete animalPtr2; //释放内存，调用派生类的析构函数
+	Animal& animalRef = *new Lion; //基类引用
+	animalRef.makeSound(); // 调用派生类的重写函数
+	animalRef.jump();
+
+	Derived obj(0);
+	obj.displayA();
+	obj.displayB();
+	obj.display();
     return 0;
 }

@@ -1,5 +1,10 @@
 #include "animal.h"
 
+Animal::Animal()
+{
+	cout << "基类Animal的默认构造函数被调用。" << endl;
+}
+
 Animal::Animal(string name,int age) {
 	this->name = name;
 	this->age = age;
@@ -23,12 +28,17 @@ void Animal::eatFood() {
 	cout << "Animal eats food." << endl;
 }
 
+Lion::Lion()
+{
+	cout << "派生类Lion的默认构造函数被调用。" << endl;
+}
+
 /*
   派生类可以通过初始化列表来调用基类的构造函数；先调用基类，后调用派生类的构造函数
 */
 Lion::Lion(string name,int age,int teeth) : Animal(name,age){
 	this->teeth = teeth;
-	cout << "派生类Lion的构造函数被调用。" << endl;
+	cout << "派生类Lion的带参构造函数被调用。" << endl;
 }
 
 // Lion类重写基类的虚函数，只需要在函数声明加上override关键字，函数实现不需要加override
@@ -37,11 +47,46 @@ void Lion::makeSound() {
 	cout << "Lion roars." << endl;
 }
 
+void Lion::jump()
+{
+	// 重写基类的纯虚函数
+	cout << "Lion jump." << endl;
+}
+
+void Lion::run()
+{
+	// 重写基类的纯虚函数
+	cout << "Lion run." << endl;
+}
+
 void Lion::hunt()
 {
 	cout << "Lion hunts for prey." << endl;
 }
 
+Rabbit::Rabbit()
+{
+	cout << "派生类Rabbit的默认构造函数被调用。" << endl;
+}
+
 Rabbit::Rabbit(string name,int age) : Animal(name,age) {
-	cout << "派生类Rabbit的构造函数被调用。" << endl;
+	cout << "派生类Rabbit的带参构造函数被调用。" << endl;
+}
+
+void Rabbit::makeSound()
+{
+	// 重写基类的虚函数
+	cout << "Rabbit squeaks." << endl;
+}
+
+void Rabbit::jump()
+{
+	// 重写基类的纯虚函数
+	cout << "Rabbit jump." << endl;
+}
+
+void Rabbit::run()
+{
+	// 重写基类的纯虚函数
+	cout << "Rabbit run." << endl;
 }
