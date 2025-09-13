@@ -32,8 +32,31 @@ MyNotebook::MyNotebook(QWidget *parent)
     //使用代码设置UI的widgetBottom控件成为水平布局
     ui->widgetBottom->setLayout(ui->horizontalLayout);
 
-    //在构造函数中连接信号与槽
+    /*
+      1.使用QObject::connect()连接信号与槽，是最常用的方式
+      例：QObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
+    */
     QObject::connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(on_btnClose_clickedMyself()));
+
+    /*
+      2.使用C++11 Lambda表达式。可以直接在连接点使用匿名函数，使代码更简洁
+      例：QObject::connect(sender,&Sender::signal,[=](){ Lambda函数体 });
+	*/
+    QObject::connect(ui->btnSave, &QPushButton::clicked, [=] {
+        std::cout << "btnSave按钮被按下。" << std::endl;
+    });
+
+    /*
+      3.使用函数指针，QT5中引入，更安全且可利用IDE的代码补全和错误检查；
+	  例：QObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
+    */
+	QObject::connect(ui->btnClose, &QPushButton::clicked, this, &MyNotebook::on_btnClose_clickedMyself);
+
+    /*
+      自定义信号与槽的链接
+    */
+    QObject::connect(this, SIGNAL(mySignal(int)), this, SLOT(mySlot(int)));
+	emit mySignal(100);  //发射信号
 }
 
 MyNotebook::~MyNotebook()
@@ -43,14 +66,21 @@ MyNotebook::~MyNotebook()
 
 void MyNotebook::on_btnClose_clickedMyself()
 {
-
+    std::cout << "btnClose按钮被按下。" << std::endl;
+    this->close();  //关闭当前窗口
 }
 
 /*
-  1.使用QObject::connect()连接信号与槽，是最常用的方式
-  例：QObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
+  4.使用UI文件自动连接，使用QT Designer时可通过命名约定自动连接；当UI文件加载时，以on_<objectName>_<signal_name>命名的槽会自动连接到相应信号
+  例：QT Designer中命名按钮为pushButton，然后在代码中定义on_pushButton_clicked()
 */
 void MyNotebook::on_btnOpen_clicked()
 {
     std::cout << "btnOpen按钮被按下。" << std::endl;
+}
+
+void MyNotebook::mySlot(int val)
+{
+	//用qDebug()取代std::cout输出调试信息
+    qDebug() << "自定义槽函数mySlot被调用，参数值为：" << val;
 }

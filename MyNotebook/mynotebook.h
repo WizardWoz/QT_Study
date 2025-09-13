@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <qdebug.h>
+
 /*
   ui命名空间：QT框架中 namespace ui{class widget;} 是一种常见用法，通常出现在使用QT Designer设计GUI时自动生成的代码中；
   class widget是一个前向声明，声明一个名为widget的类，允许在.cpp源文件中引用由QT Designer创建的UI界面而不需要在头文件中包含完整的UI类定义；
@@ -26,11 +28,23 @@ public:
     ~MyNotebook();
 
 /*
-  槽函数是特殊的私有成员函数，使用 private slots: 来修饰
+  自定义信号函数：QT中使用关键字signals声明；只需要声明不需要实现
+*/
+signals:
+    void mySignal(int);
+
+/*
+  1.使用QObject::connect()连接信号与槽，是最常用的方式
+  例：QObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
+*/
+/*
+  自定义槽函数：槽函数是特殊的私有成员函数，使用 private slots: 来修饰
+  可以是任意普通成员函数，可以有返回类型也可以接受参数，但参数类型需要与信号函数的参数类型匹配
 */
 private slots:
     void on_btnOpen_clicked();
     void on_btnClose_clickedMyself();
+    void mySlot(int);
 
 private:
     Ui::MyNotebookClass *ui;
