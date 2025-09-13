@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
-#include <qdebug.h>
+#include <QDebug>
+#include <QFile>
+#include <QFileDialog>
 
 /*
   ui命名空间：QT框架中 namespace ui{class widget;} 是一种常见用法，通常出现在使用QT Designer设计GUI时自动生成的代码中；

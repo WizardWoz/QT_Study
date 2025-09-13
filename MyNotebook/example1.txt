@@ -1,0 +1,4 @@
+this is example1 file opened by QFile.
+123
+456
+789

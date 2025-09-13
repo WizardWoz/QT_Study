@@ -1,0 +1,2 @@
+Hello, this is example2 file.Œ“ «–°’‘°£
+QDialog write data to the txt file.
