@@ -26,11 +26,16 @@ MyNotebook::MyNotebook(QWidget *parent)
     : QWidget(parent),ui(new Ui::MyNotebookClass)   //有参构造函数使用初始化参数列表
 {
     //设置QTDesigner里面的UI关联到widget类的私有变量ui里面
+	//QT Widget Designer中进行操作之后，按Ctrl+B生成新的ui_mynotebook.h文件，便于在其它的.h、.cpp文件中引用
     ui->setupUi(this);
     //当窗口大小发生变化，里面的布局不会随之变化；需要通过this->setLayout()进行显式说明，让窗口变化时，布局及其子控件随之调整
     this->setLayout(ui->verticalLayout);
     //使用代码设置UI的widgetBottom控件成为水平布局
     ui->widgetBottom->setLayout(ui->horizontalLayout);
+
+    //使用方式1连接QComboBox的信号与槽函数
+	connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(oncurrentIndexChanged(int)));
+    connect(ui->textEdit, &QTextEdit::cursorPositionChanged, this, &MyNotebook::onCursorPositionChanged);
 
     /*
       1.使用QObject::connect()连接信号与槽，是最常用的方式
@@ -56,7 +61,8 @@ MyNotebook::MyNotebook(QWidget *parent)
             qDebug() << "文件打开失败！";
             return;
         }
-        
+        this->setWindowTitle("MyNotebook--" + fileName); //设置窗口标题为保存的文件名
+
         //2.写入文件
         //(1)使用file.write()写入文件内容
         //file.write("Hello, this is example2 file.我是小赵。\n"); //写入中文没问题
@@ -95,6 +101,7 @@ void MyNotebook::on_btnClose_clickedMyself()
     {
         file.close();
         ui->textEdit->clear();
+        this->setWindowTitle("MyNotebook");
     }
     //用qDebug()取代std::cout输出调试信息
     qDebug() << "btnClose按钮被按下。";
@@ -142,10 +149,11 @@ void MyNotebook::on_btnOpen_clicked()
         qDebug() << "文件打开失败！";
         return;
     }
+	this->setWindowTitle("MyNotebook--" + fileName); //设置窗口标题为打开的文件名
     int size = file.size();
     //2.读取文件
     //char context[size];   //变长数组VLA，不是C++标准，某些编译器不支持
-    char* context = new char[size + 1]; //动态分配内存
+    //char* context = new char[size + 1]; //动态分配内存
     //(1)使用file.read()读取文件内容到context数组
     /*if(file.read(context,size)==-1)
     {
@@ -153,9 +161,21 @@ void MyNotebook::on_btnOpen_clicked()
         return;
     }
     qDebug() << "文件内容为：" << context;*/
+    //delete context;
+
     //(2)使用QTextStream读取文件内容到QString
     QTextStream in(&file);
-    in.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
+    //in.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
+    
+    //ui->comboBox->currentText()：是一个QString类型变量，需要将其转化成char*
+    QString str = ui->comboBox->currentText();
+    auto encoding = QStringConverter::encodingForName(str.toUtf8());
+	//以下是QT5的写法
+    //const char* c_str = str.toStdString().c_str();
+	//将编码名称转换为QStringConverter::Encoding枚举值
+    //auto encoding = QStringConverter::encodingForName();
+	in.setEncoding(*encoding); //根据选择的编码格式读取文件内容，避免中文乱码
+    //file.seek(0);
     while (!in.atEnd())
     {
         QString context2 = in.readLine();
@@ -164,9 +184,46 @@ void MyNotebook::on_btnOpen_clicked()
 		//QTextEdit控件显示读取的内容
 		//ui->textEdit->setText(context2);    //只能设置单行，每次设置都会覆盖掉之前的内容
 		ui->textEdit->append(context2);     //可以追加多行内容
+
+		//注意：此时文件读指针已到达文件末尾，再次读取会读不到内容，所以需要将读指针重新设置为文件开头
+
     }
     //3.关闭文件
     //file.close();
+}
+
+void MyNotebook::oncurrentIndexChanged(int index)
+{
+    //用qDebug()取代std::cout输出调试信息
+    qDebug() << "QComboBox选择框的槽函数被调用，当前选择的索引值为：" << index;
+    qDebug() << "当前选择的文本内容为：" << ui->comboBox->currentText();
+	ui->textEdit->clear(); //每次更改编码格式前，先清空文本编辑框
+    if (file.isOpen())
+    {
+		QTextStream in(&file);
+		auto encoding = QStringConverter::encodingForName(ui->comboBox->currentText().toUtf8());
+		in.setEncoding(*encoding); //根据选择的编码格式读取文件内容，避免中文乱码
+        //注意：此时文件读指针已到达文件末尾，再次读取会读不到内容，所以需要将读指针重新设置为文件开头
+        file.seek(0);
+        //重新再读文件
+        while (!in.atEnd())
+        {
+            QString context2 = in.readLine();
+            //QTextEdit控件显示读取的内容
+            //ui->textEdit->setText(context2);    //只能设置单行，每次设置都会覆盖掉之前的内容
+            ui->textEdit->append(context2);     //可以追加多行内容
+        }
+    }
+}
+
+void MyNotebook::onCursorPositionChanged()
+{
+    QTextCursor cursor = ui->textEdit->textCursor();
+    //qDebug() << " " << cursor.blockNumber() + 1 << cursor.columnNumber() + 1;
+	QString blockNum = QString::number(cursor.blockNumber() + 1);   //行号
+	QString colNum = QString::number(cursor.columnNumber() + 1);   //列号
+	const QString labelMsg = "Row: " + blockNum + " Col: " + colNum + " ";
+    ui->labelPosition->setText(labelMsg);
 }
 
 void MyNotebook::mySlot(int val)

@@ -28,6 +28,9 @@ class MyNotebook : public QWidget   //MyNotebook继承自QWidget
 public:
     //记事本程序同一时间只处理一个文件，所以把QFile对象作为类的公有成员变量
 	QFile file;  //文件对象
+
+    //QComboBox：选择下拉框控件
+
     MyNotebook(QWidget *parent = nullptr);
     ~MyNotebook();
 
@@ -49,6 +52,8 @@ private slots:
     void on_btnOpen_clicked();
     void on_btnClose_clickedMyself();
     void on_btnOpen_clickedMyself();
+	void onCursorPositionChanged(); //QTextEdit文本编辑框的槽函数
+	void oncurrentIndexChanged(int index); //QComboBox选择框的槽函数
     void mySlot(int);
 
 private:

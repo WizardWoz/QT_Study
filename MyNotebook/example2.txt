@@ -1,2 +1,2 @@
-Hello, this is example2 file.ÎÒÊÇĞ¡ÕÔ¡£
+Hello, this is example2 file.å°è¯•å†™å…¥UTF-8å­—ç¬¦
 QDialog write data to the txt file.
