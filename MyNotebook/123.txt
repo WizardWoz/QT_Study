@@ -1,2 +1,5 @@
-Hello, this is example2 file.ÎÒÊÇÐ¡ÕÔ¡£
-QDialog write data to the txt file.
+this is example1 file opened by QFile.
+123
+456
+789
+æˆ‘åœ¨è¿™é‡Œæ·»åŠ ä¸€è¡Œ

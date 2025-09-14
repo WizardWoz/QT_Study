@@ -26,6 +26,8 @@ class MyNotebook : public QWidget   //MyNotebook继承自QWidget
     Q_OBJECT
 
 public:
+    //记事本程序同一时间只处理一个文件，所以把QFile对象作为类的公有成员变量
+	QFile file;  //文件对象
     MyNotebook(QWidget *parent = nullptr);
     ~MyNotebook();
 
@@ -46,6 +48,7 @@ signals:
 private slots:
     void on_btnOpen_clicked();
     void on_btnClose_clickedMyself();
+    void on_btnOpen_clickedMyself();
     void mySlot(int);
 
 private:

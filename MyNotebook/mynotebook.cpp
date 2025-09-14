@@ -50,7 +50,6 @@ MyNotebook::MyNotebook(QWidget *parent)
         //用qDebug()取代std::cout输出调试信息
         qDebug() << "btnSave按钮被按下。";
         //1.打开文件
-        QFile file;
         file.setFileName(fileName);
         if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
@@ -60,21 +59,23 @@ MyNotebook::MyNotebook(QWidget *parent)
         
         //2.写入文件
         //(1)使用file.write()写入文件内容
-        file.write("Hello, this is example2 file.我是小赵。\n"); //写入中文没问题
+        //file.write("Hello, this is example2 file.我是小赵。\n"); //写入中文没问题
         //(2)使用QTextStream写入文件内容
         QTextStream out(&file);
-        //out.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
-        out << "QDialog write data to the txt file.";
+        out.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
+        QString context = ui->textEdit->toPlainText();
+        out << context;
 
         //3.关闭文件
-        file.close();
+        //file.close();
     });
 
     /*
       3.使用函数指针，QT5中引入，更安全且可利用IDE的代码补全和错误检查；
       例：QObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
+      on_btnOpen_clicked()：是QPushButton按下信号对应的默认槽函数名；自定义的话可写成其它名称
     */
-    //QObject::connect(ui->btnOpen, &QPushButton::clicked, this, &MyNotebook::on_btnOpen_clicked);
+    QObject::connect(ui->btnOpen, &QPushButton::clicked, this, &MyNotebook::on_btnOpen_clickedMyself);
 
     /*
       自定义信号与槽的链接
@@ -90,9 +91,20 @@ MyNotebook::~MyNotebook()
 
 void MyNotebook::on_btnClose_clickedMyself()
 {
+    if (file.isOpen())
+    {
+        file.close();
+        ui->textEdit->clear();
+    }
     //用qDebug()取代std::cout输出调试信息
     qDebug() << "btnClose按钮被按下。";
-    this->close();  //关闭当前窗口
+    //this->close();  //关闭当前窗口
+}
+
+void MyNotebook::on_btnOpen_clickedMyself()
+{
+    //用qDebug()取代std::cout输出调试信息
+    qDebug() << "btnOpen按钮被按下。";
 }
 
 /*
@@ -105,22 +117,26 @@ void MyNotebook::on_btnOpen_clicked()
     //QFileDialog类：文件选择框
     QFileDialog qFileDialog;
     //QFileDialog::getOpenFileName()：静态函数，弹出一个文件选择对话框，允许用户选择一个文件并返回该文件的路径
-    //QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), 
-    // "J:\\QT Codes\\MyNotebook", tr("Image Files (*.png *.jpg *.bmp)"));
-    qFileDialog.setWindowTitle("打开文件"); //设置对话框标题
-    qFileDialog.setDirectory("J:\\QT Codes\\MyNotebook"); //设置默认打开路径
-    //qFileDialog.setFileMode(QFileDialog::ExistingFile); //设置只能选择一个已存在的文件
-    qFileDialog.setFileMode(QFileDialog::ExistingFiles);  //设置可以选择多个已存在的文件
-    qFileDialog.exec(); //以模态方式显示对话框，阻塞后续代码执行，直到用户关闭对话框
-    QStringList filename = qFileDialog.selectedFiles(); //返回用户选择的文件列表
-    for (QString str : filename)
-    {
-        qDebug() << str;
-    }
+    //(1)打开单个文件的文件选择框
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), 
+     "J:\\QT Codes\\MyNotebook", tr("Text Files (*.txt)"));
+
+    //(2)打开多个文件的文件选择框
+    //qFileDialog.setWindowTitle("Open File"); //设置对话框标题
+    //qFileDialog.setDirectory("J:\\QT Codes\\MyNotebook"); //设置默认打开路径
+    ////qFileDialog.setFileMode(QFileDialog::ExistingFile); //设置只能选择一个已存在的文件
+    //qFileDialog.setFileMode(QFileDialog::ExistingFiles);  //设置可以选择多个已存在的文件
+    //qFileDialog.exec(); //以模态方式显示对话框，阻塞后续代码执行，直到用户关闭对话框
+    //QStringList fileNames = qFileDialog.selectedFiles(); //返回用户选择的文件列表
+    //for (QString str : fileNames)
+    //{
+    //    qDebug() << str;
+    //}
     //用qDebug()取代std::cout输出调试信息
     qDebug() << "btnOpen按钮被按下。";
     //1.打开文件
-    QFile file("J:\\QT Codes\\MyNotebook\\example1.txt");
+	ui->textEdit->clear(); //每次打开文件前，先清空文本编辑框
+	file.setFileName(fileName);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "文件打开失败！";
@@ -131,12 +147,12 @@ void MyNotebook::on_btnOpen_clicked()
     //char context[size];   //变长数组VLA，不是C++标准，某些编译器不支持
     char* context = new char[size + 1]; //动态分配内存
     //(1)使用file.read()读取文件内容到context数组
-    if(file.read(context,size)==-1)
+    /*if(file.read(context,size)==-1)
     {
         qDebug() << "文件读取失败！";
         return;
     }
-    qDebug() << "文件内容为：" << context;
+    qDebug() << "文件内容为：" << context;*/
     //(2)使用QTextStream读取文件内容到QString
     QTextStream in(&file);
     in.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
@@ -145,9 +161,12 @@ void MyNotebook::on_btnOpen_clicked()
         QString context2 = in.readLine();
         qDebug() << context2;
         qDebug() << "--------";
+		//QTextEdit控件显示读取的内容
+		//ui->textEdit->setText(context2);    //只能设置单行，每次设置都会覆盖掉之前的内容
+		ui->textEdit->append(context2);     //可以追加多行内容
     }
     //3.关闭文件
-    file.close();
+    //file.close();
 }
 
 void MyNotebook::mySlot(int val)
