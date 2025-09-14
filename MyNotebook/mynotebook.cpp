@@ -9,16 +9,16 @@
 */
 /*
   按键QPushButton设置信号与槽之间的连接：
-  1.使用QObject::connect()连接信号与槽，是最常用的方式
+  1.使用QObject::connect()连接信号与槽，必须自定义槽函数，且必须使用与默认槽函数不同的函数名
   例：QObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
 
-  2.使用C++11 Lambda表达式。可以直接在连接点使用匿名函数，使代码更简洁
+  2.使用C++11 Lambda表达式。可以直接在连接点使用匿名函数，使代码更简洁，此时信号必须使用函数引用
   例：QObject::connect(sender,&Sender::signal,[=](){ Lambda函数体 });
 
   3.使用函数指针，QT5中引入，更安全且可利用IDE的代码补全和错误检查；
   例：QObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
 
-  4.使用UI文件自动连接，使用QT Designer时可通过命名约定自动连接；当UI文件加载时，以on_<objectName>_<signal_name>命名的槽会自动连接到相应信号
+  4.使用UI文件自动连接，使用QT Designer时可通过命名约定自动连接；当UI文件加载时，以on_<objectName>_<signal_name>命名的默认槽函数会自动连接到相应信号
   例：QT Designer中命名按钮为pushButton，然后在代码中定义on_pushButton_clicked()
 */
 
@@ -33,53 +33,78 @@ MyNotebook::MyNotebook(QWidget *parent)
     //使用代码设置UI的widgetBottom控件成为水平布局
     ui->widgetBottom->setLayout(ui->horizontalLayout);
 
+    //使用QShortcut类引入放大、缩小快捷键
+    QShortcut* shortcutOpen = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")), this);
+    QShortcut* shortcutSave = new QShortcut(QKeySequence(tr("Ctrl+S", "File|Save")), this);
+    QShortcut* shortcutZoomIn = new QShortcut(QKeySequence(tr("Ctrl+Shift+=", "File|Save")), this);
+    QShortcut* shortcutZoomOut = new QShortcut(QKeySequence(tr("Ctrl+Shift+-", "File|Save")), this);
+    QObject::connect(shortcutOpen, &QShortcut::activated, [=]() {
+        on_btnOpen_clicked();
+    });
+    connect(shortcutSave, &QShortcut::activated, [=]() {
+        on_btnSave_clickedMyself();
+    });
+    connect(shortcutZoomIn, &QShortcut::activated, [=]() {
+        zoomIn();
+    });
+    connect(shortcutZoomOut, &QShortcut::activated, [=]() {
+        zoomOut();
+    });
+
     //使用方式1连接QComboBox的信号与槽函数
-	connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(oncurrentIndexChanged(int)));
+    QObject::connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(oncurrentIndexChanged(int)));
     connect(ui->textEdit, &QTextEdit::cursorPositionChanged, this, &MyNotebook::onCursorPositionChanged);
 
     /*
       1.使用QObject::connect()连接信号与槽，是最常用的方式
       例：QObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
     */
-    QObject::connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(on_btnClose_clickedMyself()));
-
+    //QObject::connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(on_btnClose_clickedMyself()));
+    QObject::connect(ui->btnSave, SIGNAL(clicked()), this, SLOT(on_btnSave_clickedMyself()));
     /*
       2.使用C++11 Lambda表达式。可以直接在连接点使用匿名函数，使代码更简洁
       例：QObject::connect(sender,&Sender::signal,[=](){ Lambda函数体 });
     */
-    QObject::connect(ui->btnSave, &QPushButton::clicked, [=] {
-        //将文件保存到指定路径
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-            "J:\\QT Codes\\MyNotebook\\untitled.txt", tr("Text Files (*.txt *.doc)"));
-		qDebug() << "选择的文件路径为：" << fileName;
-        //用qDebug()取代std::cout输出调试信息
-        qDebug() << "btnSave按钮被按下。";
-        //1.打开文件
-        file.setFileName(fileName);
-        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    //QObject::connect(ui->btnSave, SIGNAL(clicked()), this, SLOT(on_btnSave_clicked()));
+    QObject::connect(ui->btnClose, &QPushButton::clicked, [=]() {
+        //ui->textEdit->clear();
+        //关闭主界面前，出现提示框
+        QMessageBox msgBox;
+        /*msgBox.setText("The document has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);*/
+        int ret = QMessageBox::warning(this, tr("MyNotebook"), tr("The document has been modified.\nDo you want to save your changes?"),
+        QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+        switch (ret)
         {
-            qDebug() << "文件打开失败！";
-            return;
+        case QMessageBox::Save:
+            qDebug() << "QMessageBox::Save";
+            on_btnSave_clickedMyself();
+            break;
+        case QMessageBox::Discard:
+            qDebug() << "QMessageBox::Discard";
+            ui->textEdit->clear();
+            if (file.isOpen())
+            {
+                file.close();
+                this->setWindowTitle("MyNotebook");
+            }
+            break;
+        case QMessageBox::Cancel:
+            qDebug() << "QMessageBox::Cancel";
+            break;
+        default:
+            break;
         }
-        this->setWindowTitle("MyNotebook--" + fileName); //设置窗口标题为保存的文件名
-
-        //2.写入文件
-        //(1)使用file.write()写入文件内容
-        //file.write("Hello, this is example2 file.我是小赵。\n"); //写入中文没问题
-        //(2)使用QTextStream写入文件内容
-        QTextStream out(&file);
-        out.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
-        QString context = ui->textEdit->toPlainText();
-        out << context;
-
-        //3.关闭文件
-        //file.close();
+        //用qDebug()取代std::cout输出调试信息
+        qDebug() << "btnClose按钮被按下。";
+        //this->close();  //关闭当前窗口
     });
-
     /*
       3.使用函数指针，QT5中引入，更安全且可利用IDE的代码补全和错误检查；
       例：QObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
-      on_btnOpen_clicked()：是QPushButton按下信号对应的默认槽函数名；自定义的话可写成其它名称
+      on_xxx_clicked()：是QPushButton按下信号对应的默认槽函数名；自定义的话可写成其它名称例如on_btnOpen_clickedMyself
     */
     QObject::connect(ui->btnOpen, &QPushButton::clicked, this, &MyNotebook::on_btnOpen_clickedMyself);
 
@@ -95,17 +120,43 @@ MyNotebook::~MyNotebook()
     delete ui;
 }
 
-void MyNotebook::on_btnClose_clickedMyself()
+void MyNotebook::on_btnSave_clickedMyself()
 {
-    if (file.isOpen())
+    if (!file.isOpen())
     {
-        file.close();
-        ui->textEdit->clear();
-        this->setWindowTitle("MyNotebook");
+        //将文件保存到指定路径
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+            "J:\\QT Codes\\MyNotebook\\untitled.txt", tr("Text Files (*.txt *.doc)"));
+        qDebug() << "选择的文件路径为：" << fileName;
+        //用qDebug()取代std::cout输出调试信息
+        qDebug() << "btnSave按钮被按下。";
+        //1.打开文件
+        file.setFileName(fileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            qDebug() << "文件打开失败！";
+            return;
+        }
+        this->setWindowTitle("MyNotebook--" + fileName); //设置窗口标题为保存的文件名
     }
-    //用qDebug()取代std::cout输出调试信息
-    qDebug() << "btnClose按钮被按下。";
-    //this->close();  //关闭当前窗口
+    //2.写入文件
+    //(1)使用file.write()写入文件内容
+    //file.write("Hello, this is example2 file.我是小赵。\n"); //写入中文没问题
+    //(2)使用QTextStream写入文件内容
+    QTextStream out(&file);
+    //out.setEncoding(QStringConverter::Encoding::Utf8); //设置编码格式，避免中文乱码
+    QString str = ui->comboBox->currentText();
+    auto encoding = QStringConverter::encodingForName(str.toUtf8());
+    //以下是QT5的写法
+    //const char* c_str = str.toStdString().c_str();
+    //将编码名称转换为QStringConverter::Encoding枚举值
+    //auto encoding = QStringConverter::encodingForName();
+    out.setEncoding(*encoding); //根据选择的编码格式读取文件内容，避免中文乱码
+    QString context = ui->textEdit->toPlainText();
+    out << context;
+
+    //3.关闭文件
+    //file.close();
 }
 
 void MyNotebook::on_btnOpen_clickedMyself()
@@ -116,7 +167,7 @@ void MyNotebook::on_btnOpen_clickedMyself()
 
 /*
   4.使用UI文件自动连接，使用QT Designer设置好QPushButton，在类实现中声明并定义on_<objectName>_<signal_name>槽函数；
-  当UI文件加载时，以on_<objectName>_<signal_name>命名的槽会自动连接到相应信号
+  当UI文件加载时，以on_<objectName>_<signal_name>命名的默认槽函数会自动连接到相应信号
   例：QT Designer中命名按钮为pushButton，然后在代码中定义on_pushButton_clicked()
 */
 void MyNotebook::on_btnOpen_clicked()
@@ -144,7 +195,7 @@ void MyNotebook::on_btnOpen_clicked()
     //1.打开文件
 	ui->textEdit->clear(); //每次打开文件前，先清空文本编辑框
 	file.setFileName(fileName);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "文件打开失败！";
         return;
@@ -216,6 +267,38 @@ void MyNotebook::oncurrentIndexChanged(int index)
     }
 }
 
+void MyNotebook::zoomIn()
+{
+    //1.获得TextEdit的当前字体信息
+    QFont font = ui->textEdit->font();
+    //2.获得当前字体大小
+    int fontSize = font.pointSize();
+    if (fontSize == -1)
+    {
+        return;
+    }
+    //3.改变大小，并设置字体大小
+    int newFontSize = fontSize + 1;
+    font.setPointSize(newFontSize);
+    ui->textEdit->setFont(font);
+}
+
+void MyNotebook::zoomOut()
+{
+    //1.获得TextEdit的当前字体信息
+    QFont font = ui->textEdit->font();
+    //2.获得当前字体大小
+    int fontSize = font.pointSize();
+    if (fontSize == -1)
+    {
+        return;
+    }
+    //3.改变大小，并设置字体大小
+    int newFontSize = fontSize - 1;
+    font.setPointSize(newFontSize);
+    ui->textEdit->setFont(font);
+}
+
 void MyNotebook::onCursorPositionChanged()
 {
     QTextCursor cursor = ui->textEdit->textCursor();
@@ -224,6 +307,19 @@ void MyNotebook::onCursorPositionChanged()
 	QString colNum = QString::number(cursor.columnNumber() + 1);   //列号
 	const QString labelMsg = "Row: " + blockNum + " Col: " + colNum + " ";
     ui->labelPosition->setText(labelMsg);
+    //设置当前行高亮
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    QTextEdit::ExtraSelection ext;
+    //1.获取当前行
+    ext.cursor = ui->textEdit->textCursor();
+    QBrush qBrush(Qt::lightGray);
+    //2.设置颜色
+    ext.format.setBackground(qBrush);
+    //配置段属性，整行显示
+    ext.format.setProperty(QTextFormat::FullWidthSelection, true);
+    //3.设置，把ext加入到ext的容器中
+    extraSelections.append(ext);
+    ui->textEdit->setExtraSelections(extraSelections);
 }
 
 void MyNotebook::mySlot(int val)

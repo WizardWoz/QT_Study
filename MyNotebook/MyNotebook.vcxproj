@@ -97,7 +97,9 @@
   <ItemGroup>
     <QtRcc Include="mynotebook.qrc" />
     <QtRcc Include="res.qrc" />
-    <QtUic Include="mynotebook.ui" />
+    <QtUic Include="mynotebook.ui">
+      <FileType>Document</FileType>
+    </QtUic>
     <QtMoc Include="mynotebook.h" />
     <ClCompile Include="mynotebook.cpp" />
     <ClCompile Include="main.cpp" />

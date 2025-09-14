@@ -3,6 +3,9 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QShortcut>
+#include <QList>
 
 /*
   ui命名空间：QT框架中 namespace ui{class widget;} 是一种常见用法，通常出现在使用QT Designer设计GUI时自动生成的代码中；
@@ -13,6 +16,14 @@
 /*
   QT_BEGIN_NAMESPACE：QT框架中用于支持命名空间的宏定义，指定接下来的代码位于QT的命名空间。QT使用这些宏来确保其中中的类和函数不会与其它库中的同名类或函数冲突；
   通常与QT_END_NAMESPACE配对使用，标志着命名空间的结束。
+*/
+
+/*
+  QT框架的QList类：内部实现类似数组，但也提供了一些链表的特性，旨在提供一个多数情况下高效又方便的通用列表容器
+  1.数组式存储：大多数情况下使用连续的内存块来存储元素，方便按索引访问元素、迭代非常快速
+  2.动态调整大小：当元素数量增加时，QList会自动调整其内部存储容量
+  3.链表特性：拥有一些类似链表的操作：比如在列表的开始、结束处添加或删除元素
+  4.复制时共享内存：隐式共享（写时复制）机制，在复制QList时不会立即复制其内容，而是共享同一块内存，直到其中一个列表被修改
 */
 
 #include <QtWidgets/QWidget>
@@ -50,10 +61,13 @@ signals:
 */
 private slots:
     void on_btnOpen_clicked();
-    void on_btnClose_clickedMyself();
+    void on_btnSave_clickedMyself();
+    //void on_btnClose_clickedMyself();
     void on_btnOpen_clickedMyself();
 	void onCursorPositionChanged(); //QTextEdit文本编辑框的槽函数
 	void oncurrentIndexChanged(int index); //QComboBox选择框的槽函数
+    void zoomIn();
+    void zoomOut();
     void mySlot(int);
 
 private:
