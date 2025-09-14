@@ -33,6 +33,9 @@
     <ClCompile Include="multiderive.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="mytemp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cir.h">
@@ -51,6 +54,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="multiderive.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mytemp.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

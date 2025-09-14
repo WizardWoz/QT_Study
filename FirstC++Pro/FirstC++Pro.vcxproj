@@ -133,6 +133,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="multiderive.cpp" />
     <ClCompile Include="overload.cpp" />
+    <ClCompile Include="mytemp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animal.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="cir.h" />
     <ClInclude Include="multiderive.h" />
     <ClInclude Include="overload.h" />
+    <ClInclude Include="mytemp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

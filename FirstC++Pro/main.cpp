@@ -8,6 +8,7 @@
 #include "animal.h"
 #include "multiderive.h"
 #include "cir.h"
+#include "mytemp.h"
 
 using namespace std;
 
@@ -251,9 +252,25 @@ int main() {
 	animalRef.makeSound(); // 调用派生类的重写函数
 	animalRef.jump();
 
+	/*继承与多态*/
 	Derived obj(0);
 	obj.displayA();
 	obj.displayB();
 	obj.display();
+
+	/*类模板&函数模板*/
+	PrintData<int> intPrinter;	//创建一个处理int类型的PrintData实例
+	intPrinter.setEveryThing(42);
+	intPrinter.printEveryThing();
+	PrintData<double> doublePrinter; //创建一个处理double类型的PrintData实例
+	doublePrinter.setEveryThing(3.14159);
+	doublePrinter.printEveryThing();
+	PrintData<std::string> stringPrinter; //创建一个处理std::string类型的PrintData实例
+	stringPrinter.setEveryThing("Hello, Template!");
+	stringPrinter.printEveryThing();
+	int template_x = 10, template_y = 20;
+	cout << "使用函数模板将两个整数a和b相加，结果为：" << add(template_x, template_y) << endl;
+	double template_m = 4.8, template_n = 4.7;
+	cout << "使用函数模板将两个浮点数m和n相加，结果为：" << add(template_m, template_n) << endl;
     return 0;
 }
