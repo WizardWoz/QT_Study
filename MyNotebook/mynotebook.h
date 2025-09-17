@@ -1,11 +1,15 @@
 #pragma once
 #include <iostream>
+#include <QWidget>
 #include <QDebug>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QWheelEvent>
+#include <QResizeEvent>
 #include <QList>
+#include "mybutton.h"
 
 /*
   ui命名空间：QT框架中 namespace ui{class widget;} 是一种常见用法，通常出现在使用QT Designer设计GUI时自动生成的代码中；
@@ -25,8 +29,6 @@
   3.链表特性：拥有一些类似链表的操作：比如在列表的开始、结束处添加或删除元素
   4.复制时共享内存：隐式共享（写时复制）机制，在复制QList时不会立即复制其内容，而是共享同一块内存，直到其中一个列表被修改
 */
-
-#include <QtWidgets/QWidget>
 #include "ui_mynotebook.h"
 
 class MyNotebook : public QWidget   //MyNotebook继承自QWidget
@@ -44,7 +46,11 @@ public:
 
     MyNotebook(QWidget *parent = nullptr);
     ~MyNotebook();
-
+    void enterEvent(QEnterEvent*) override;     //鼠标移入窗口事件
+    void leaveEvent(QEvent*) override;          //鼠标移出窗口事件
+    void wheelEvent(QWheelEvent*) override;     //鼠标滚轮滚动事件
+    void closeEvent(QCloseEvent*) override;     //窗口关闭事件
+    void resizeEvent(QResizeEvent*) override;   //窗口大小改变事件
 /*
   自定义信号函数：QT中使用关键字signals声明；只需要声明不需要实现
 */

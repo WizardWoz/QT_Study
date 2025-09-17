@@ -10,6 +10,9 @@
     <height>426</height>
    </rect>
   </property>
+  <property name="windowTitle">
+   <string>MyNotebook</string>
+  </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
@@ -98,7 +101,7 @@ QPushButton:pressed{color:blue}</string>
      </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="textEdit">
+     <widget class="MyTextEdit" name="textEdit">
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -180,6 +183,13 @@ QPushButton:pressed{color:blue}</string>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>mytextedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="mynotebook.qrc"/>
  </resources>

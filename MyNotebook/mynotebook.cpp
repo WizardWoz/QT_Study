@@ -21,6 +21,21 @@
   4.使用UI文件自动连接，使用QT Designer时可通过命名约定自动连接；当UI文件加载时，以on_<objectName>_<signal_name>命名的默认槽函数会自动连接到相应信号
   例：QT Designer中命名按钮为pushButton，然后在代码中定义on_pushButton_clicked()
 */
+/*
+  1.QT中所有基于窗口的应用程序底层均借助了事件处理，目的是实现回调（只有这样程序的效率才是最高）；QT内部提供了事件处理机制，
+  过程如下 产生->派发->过滤->分发->处理 四个阶段。QT对于事件都有默认的处理动作；如果有特殊需求则在合适阶段重写事件处理动作（例如自定义信号与槽）
+  
+  2.事件由系统或QT本身在不同场景下发出；当用户按下、移动鼠标，敲击键盘；或者窗口关闭、大小变化、隐藏显示等都会发出相应事件。
+  一些事件在对用户操作作出响应时发出，如鼠标、键盘事件；另一些事件则是由系统自动发出，如计时器事件
+
+  3.每一个QT应用程序对应一个唯一的QApplication应用程序对象，调用该对象的exec()函数，则框架内部的事件检测就开始了，程序将进入事件循环来监听应用程序
+
+  4.(1)假设当前产生了一个事件
+  (2)QT使用应用程序对象调用notify()函数将事件派发到指定窗口 bool QApplication::notify(QObject* receiver,QEvent* e)
+  (3)事件过滤器在派发过程中进行过滤，默认不对任何产生的事件进行过滤 bool QObject::eventFilter(QObject* watched,QEvent* e)
+  (4)事件发送到指定窗口后，窗口的事件分发器对收到的事件进行分发 bool QWidget::event(QEvent* e)
+  (5)最终事件处理函数接收事件并处理 void QWidget::mousePressEvent(QMouseEvent* e)
+*/
 
 MyNotebook::MyNotebook(QWidget *parent)
     : QWidget(parent),ui(new Ui::MyNotebookClass)   //有参构造函数使用初始化参数列表
@@ -33,7 +48,7 @@ MyNotebook::MyNotebook(QWidget *parent)
     //使用代码设置UI的widgetBottom控件成为水平布局
     ui->widgetBottom->setLayout(ui->horizontalLayout);
 
-    //使用QShortcut类引入放大、缩小快捷键
+    //使用QShortcut类引入放大、缩小快捷键功能
     QShortcut* shortcutOpen = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")), this);
     QShortcut* shortcutSave = new QShortcut(QKeySequence(tr("Ctrl+S", "File|Save")), this);
     QShortcut* shortcutZoomIn = new QShortcut(QKeySequence(tr("Ctrl+Shift+=", "File|Save")), this);
@@ -54,6 +69,13 @@ MyNotebook::MyNotebook(QWidget *parent)
     //使用方式1连接QComboBox的信号与槽函数
     QObject::connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(oncurrentIndexChanged(int)));
     connect(ui->textEdit, &QTextEdit::cursorPositionChanged, this, &MyNotebook::onCursorPositionChanged);
+
+    //为自定义按键连接信号与槽函数
+    /*connect(ui->mybtn, &MyButton::clicked, [=]() {
+        qDebug() << "MyButton is clicked.";
+    });*/
+
+    
 
     /*
       1.使用QObject::connect()连接信号与槽，是最常用的方式
@@ -118,6 +140,43 @@ MyNotebook::MyNotebook(QWidget *parent)
 MyNotebook::~MyNotebook()
 {
     delete ui;
+}
+
+void MyNotebook::enterEvent(QEnterEvent* event)
+{
+    qDebug() << "mouse in.";
+}
+
+void MyNotebook::leaveEvent(QEvent* event)
+{
+    qDebug() << "mouse out.";
+}
+
+void MyNotebook::wheelEvent(QWheelEvent* event)
+{
+    qDebug() << event->angleDelta();
+}
+
+void MyNotebook::closeEvent(QCloseEvent* event)
+{
+    int ret = QMessageBox::warning(this, tr("MyNotebook"), tr("Close the window.\nDo you want to close the window?"),
+        QMessageBox::Ok | QMessageBox::No);
+    switch (ret)
+    {
+    case QMessageBox::Ok:
+        event->accept();
+        break;
+    case QMessageBox::No:
+        event->ignore();
+        break;
+    default:
+        break;
+    }
+}
+
+void MyNotebook::resizeEvent(QResizeEvent* event)
+{
+    qDebug() << "oldSize:" << event->oldSize() << "newSize:" << event->size();
 }
 
 void MyNotebook::on_btnSave_clickedMyself()

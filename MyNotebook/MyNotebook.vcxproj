@@ -95,16 +95,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="mytextedit.cpp" />
     <QtRcc Include="mynotebook.qrc" />
     <QtRcc Include="res.qrc" />
     <QtUic Include="mynotebook.ui">
       <FileType>Document</FileType>
     </QtUic>
     <QtMoc Include="mynotebook.h" />
+    <ClCompile Include="mybutton.cpp" />
     <ClCompile Include="mynotebook.cpp" />
     <ClCompile Include="main.cpp" />
     <None Include="MyNotebook.ico" />
     <ResourceCompile Include="MyNotebook.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="mybutton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="mytextedit.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
