@@ -9,6 +9,7 @@
 #include <QWheelEvent>
 #include <QResizeEvent>
 #include <QList>
+#include <QGuiApplication>
 #include "mybutton.h"
 
 /*
@@ -51,6 +52,8 @@ public:
     void wheelEvent(QWheelEvent*) override;     //鼠标滚轮滚动事件
     void closeEvent(QCloseEvent*) override;     //窗口关闭事件
     void resizeEvent(QResizeEvent*) override;   //窗口大小改变事件
+
+	bool eventFilter(QObject*, QEvent*); //事件过滤器函数
 /*
   自定义信号函数：QT中使用关键字signals声明；只需要声明不需要实现
 */

@@ -43,6 +43,10 @@ MyNotebook::MyNotebook(QWidget *parent)
     //设置QTDesigner里面的UI关联到widget类的私有变量ui里面
 	//QT Widget Designer中进行操作之后，按Ctrl+B生成新的ui_mynotebook.h文件，便于在其它的.h、.cpp文件中引用
     ui->setupUi(this);
+    /*
+      自定义事件，安装事件过滤器
+    */
+    ui->textEdit->viewport()->installEventFilter(this);  //为textEdit文本编辑框安装事件过滤器
     //当窗口大小发生变化，里面的布局不会随之变化；需要通过this->setLayout()进行显式说明，让窗口变化时，布局及其子控件随之调整
     this->setLayout(ui->verticalLayout);
     //使用代码设置UI的widgetBottom控件成为水平布局
@@ -177,6 +181,42 @@ void MyNotebook::closeEvent(QCloseEvent* event)
 void MyNotebook::resizeEvent(QResizeEvent* event)
 {
     qDebug() << "oldSize:" << event->oldSize() << "newSize:" << event->size();
+}
+
+bool MyNotebook::eventFilter(QObject* watched, QEvent* event)
+{
+    /*if (event->type() == QEvent::MouseButtonDblClick)
+    {
+        qDebug() << "mouse button event filtered.";
+    }
+	QKeyEvent* keyEvent = (QKeyEvent*)event;
+    if (keyEvent->key() == Qt::Key_Control)
+    {
+		qDebug() << "Ctrl key event filtered.";
+    }*/
+
+    //放大后，把光标停留在文本中间某个位置，按住ctrl + 滚轮，会优先执行文本的上下滚动而不是放大或缩小
+    if (event->type() == QEvent::Wheel)
+    {
+		qDebug() << "wheel event filtered.";
+        //C++动态类型转换
+		QWheelEvent* wheelEvent = dynamic_cast<QWheelEvent*>(event);
+        if (QGuiApplication::keyboardModifiers() == Qt::ControlModifier)
+        {
+            qDebug() << "Ctrl+Wheel event filtered.";
+            if (wheelEvent->angleDelta().y() > 0)
+            {
+                zoomIn();
+            }
+            else if (wheelEvent->angleDelta().y() < 0)
+            {
+                zoomOut();
+			}
+			return true; //事件过滤器处理该事件，不再向下传递
+        }
+        return false;
+    }
+    
 }
 
 void MyNotebook::on_btnSave_clickedMyself()
