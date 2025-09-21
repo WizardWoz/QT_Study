@@ -3,6 +3,9 @@
   1.MainWindow：是一个包含完整菜单栏、工具栏、状态栏的主窗口应用程序框架，适合于更复杂的应用程序，需要这些额外的用户界面元素来提供丰富的功能和交互
   2.Widget：是一个简单的接口，没有内置的菜单栏、工具栏、状态栏，更适合于简单、专用的应用程序，不需要复杂的用户界面组件
 */
+/*
+  QT帮助手册：位于 开始菜单->Qt->Assistant
+*/
 
 #include "mynotebook.h"
 #include <QtWidgets/QApplication>
