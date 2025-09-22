@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "serialportassistant.h"
 #include <QtWidgets/QApplication>
 

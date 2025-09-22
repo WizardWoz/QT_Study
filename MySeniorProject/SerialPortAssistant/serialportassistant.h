@@ -12,6 +12,6 @@ public:
     ~SerialPortAssistant();
 
 private:
-    Ui::SerialPortAssistantClass ui;
+    Ui::SerialPortAssistantClass* ui;
 };
 
