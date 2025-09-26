@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>661</width>
-    <height>706</height>
+    <width>709</width>
+    <height>705</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SerialPortAssistant</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>661</width>
+     <width>710</width>
      <height>706</height>
     </rect>
    </property>
@@ -463,7 +463,20 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_serialNum"/>
+             <widget class="QComboBox" name="comboBox_serialNum">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -477,7 +490,70 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_baudRate"/>
+             <widget class="QComboBox" name="comboBox_baudRate">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>4800</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>9600</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>19200</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>38400</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>57600</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>74880</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>115200</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>230400</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>460800</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>576000</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -491,7 +567,45 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_dataBit"/>
+             <widget class="QComboBox" name="comboBox_dataBit">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>5</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>6</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>7</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>8</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>None</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -505,7 +619,45 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_checkBit"/>
+             <widget class="QComboBox" name="comboBox_checkBit">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>None</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Even</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Odd</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Mark</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Space</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -519,7 +671,40 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_stopBit"/>
+             <widget class="QComboBox" name="comboBox_stopBit">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>One</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>OneAndHalf</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Two</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>No</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -533,7 +718,40 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_flowCon"/>
+             <widget class="QComboBox" name="comboBox_flowCon">
+              <property name="minimumSize">
+               <size>
+                <width>90</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>90</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>No</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Soft</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Hard</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>None</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -548,8 +766,14 @@
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0" rowspan="2">
            <widget class="QPushButton" name="btnCloseSerial">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>60</height>
+             </size>
+            </property>
             <property name="text">
-             <string>关闭串口</string>
+             <string>打开串口</string>
             </property>
            </widget>
           </item>
@@ -633,7 +857,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_timeEpoch"/>
+           <widget class="QLineEdit" name="lineEdit_timeEpoch">
+            <property name="text">
+             <string>1000</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="label_11">
