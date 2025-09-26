@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QtWidgets/QWidget>
 #include <QSerialPort>
@@ -14,6 +14,8 @@ public:
 
 private slots:
     void on_btnCloseOrOpenSerial_clicked();
+	void on_btnSendContent_clicked();
+    void on_serialData_readyToRead();
 
 private:
     Ui::SerialPortAssistantClass* ui;

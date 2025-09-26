@@ -1,4 +1,4 @@
-#include "serialportassistant.h"
+ï»¿#include "serialportassistant.h"
 #include "ui_serialportassistant.h"
 #include <QDebug>
 #include <QSerialPort>
@@ -11,12 +11,14 @@ SerialPortAssistant::SerialPortAssistant(QWidget *parent)
 	this->setLayout(ui->gridLayout_Global);
 	serialPort = new QSerialPort(this);
 
+	connect(serialPort, &QSerialPort::readyRead, this, &SerialPortAssistant::on_serialData_readyToRead);
+
 	ui->comboBox_baudRate->setCurrentIndex(6);
 	ui->comboBox_dataBit->setCurrentIndex(3);
 
 
 	QList<QSerialPortInfo> serialList = QSerialPortInfo::availablePorts();
-	//C++µü´úÆ÷±éÀú
+	//C++è¿­ä»£å™¨éå†ï¼Œå°†å¯ç”¨çš„ä¸²å£å·æ·»åŠ åˆ°ä¸‹æ‹‰æ¡†ä¸­
 	for (QSerialPortInfo serialInfo : serialList)
 	{
 		qDebug() << serialInfo.portName();
@@ -27,17 +29,33 @@ SerialPortAssistant::SerialPortAssistant(QWidget *parent)
 SerialPortAssistant::~SerialPortAssistant()
 {
     delete ui;
+	delete serialPort;
+}
+
+void SerialPortAssistant::on_btnSendContent_clicked()
+{
+	const char* sendData = ui->lineEdit_sendContent->text().toStdString().c_str();
+	serialPort->write(sendData);
+	qDebug() << "Send OK!" << sendData;
+	ui->textEdit_Record->append(sendData);
+}
+
+void SerialPortAssistant::on_serialData_readyToRead()
+{
+	QString revMessage = serialPort->readAll();
+	qDebug() << "Received Message:" << revMessage;
+	ui->textEdit_Rev->append(revMessage);
 }
 
 void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()
 {
-	//1.Ñ¡Ôñ¶Ë¿ÚºÅ
+	//1.é€‰æ‹©ç«¯å£å·
 	serialPort->setPortName(ui->comboBox_serialNum->currentText());
-	//2.ÅäÖÃ²¨ÌØÂÊ
+	//2.é…ç½®æ³¢ç‰¹ç‡
 	serialPort->setBaudRate(ui->comboBox_baudRate->currentText().toInt());
-	//3.ÅäÖÃÊı¾İÎ»
+	//3.é…ç½®æ•°æ®ä½
 	serialPort->setDataBits(QSerialPort::DataBits(ui->comboBox_dataBit->currentText().toInt()));
-	//4.ÅäÖÃĞ£ÑéÎ»
+	//4.é…ç½®æ ¡éªŒä½
 	/*enum Parity {
 		NoParity = 0,
 		EvenParity = 2,
@@ -65,14 +83,14 @@ void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()
 	default:
 		break;
 	}
-	//5.ÅäÖÃÍ£Ö¹Î»
+	//5.é…ç½®åœæ­¢ä½
 	serialPort->setStopBits(QSerialPort::StopBits(ui->comboBox_stopBit->currentText().toInt()));
-	//6.Á÷¿Ø
+	//6.æµæ§
 	if (ui->comboBox_flowCon->currentText()=="None")
 	{
 		serialPort->setFlowControl(QSerialPort::NoFlowControl);
 	}
-	//7.´ò¿ª´®¿Ú
+	//7.æ‰“å¼€ä¸²å£
 	if (serialPort->open(QIODevice::ReadWrite))
 	{
 		qDebug() << "Serial Open Success!";

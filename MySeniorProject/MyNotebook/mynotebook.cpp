@@ -1,58 +1,58 @@
-#include "mynotebook.h"
+ï»¿#include "mynotebook.h"
 #include "ui_mynotebook.h"
 
 /*
-  ĞÅºÅÓë²Û£º
-  1.ĞÅºÅSignal£ºÓÉ¶ÔÏóÔÚÌØ¶¨ÊÂ¼ş·¢ÉúÊ±·¢³öµÄÏûÏ¢£»ÀıÈçQPushButtonÓĞÒ»¸öclickedĞÅºÅ£¬µ±ÓÃ»§µã»÷°´¼üÊ±·¢³ö
-  2.²ÛSlot£ºÓÃÀ´ÏìÓ¦ĞÅºÅµÄ·½·¨£¬¿ÉÒÔÊÇÈÎÒâº¯Êı£»µ±¹ØÁªµÄĞÅºÅ·¢³öÊ±¸Ã²Ûº¯Êı±»µ÷ÓÃ
-  3.Á¬½ÓĞÅºÅÓë²Û£ºÊ¹ÓÃQObject::connect()·½·¨½«ĞÅºÅÁ¬½Óµ½²Û£»µ±ĞÅºÅ·¢³öÊ±£¬¹ØÁªµÄ²Ûº¯Êı»á×Ô¶¯Ö´ĞĞ
+  ä¿¡å·ä¸æ§½ï¼š
+  1.ä¿¡å·Signalï¼šç”±å¯¹è±¡åœ¨ç‰¹å®šäº‹ä»¶å‘ç”Ÿæ—¶å‘å‡ºçš„æ¶ˆæ¯ï¼›ä¾‹å¦‚QPushButtonæœ‰ä¸€ä¸ªclickedä¿¡å·ï¼Œå½“ç”¨æˆ·ç‚¹å‡»æŒ‰é”®æ—¶å‘å‡º
+  2.æ§½Slotï¼šç”¨æ¥å“åº”ä¿¡å·çš„æ–¹æ³•ï¼Œå¯ä»¥æ˜¯ä»»æ„å‡½æ•°ï¼›å½“å…³è”çš„ä¿¡å·å‘å‡ºæ—¶è¯¥æ§½å‡½æ•°è¢«è°ƒç”¨
+  3.è¿æ¥ä¿¡å·ä¸æ§½ï¼šä½¿ç”¨QObject::connect()æ–¹æ³•å°†ä¿¡å·è¿æ¥åˆ°æ§½ï¼›å½“ä¿¡å·å‘å‡ºæ—¶ï¼Œå…³è”çš„æ§½å‡½æ•°ä¼šè‡ªåŠ¨æ‰§è¡Œ
 */
 /*
-  °´¼üQPushButtonÉèÖÃĞÅºÅÓë²ÛÖ®¼äµÄÁ¬½Ó£º
-  1.Ê¹ÓÃQObject::connect()Á¬½ÓĞÅºÅÓë²Û£¬±ØĞë×Ô¶¨Òå²Ûº¯Êı£¬ÇÒ±ØĞëÊ¹ÓÃÓëÄ¬ÈÏ²Ûº¯Êı²»Í¬µÄº¯ÊıÃû
-  Àı£ºQObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
+  æŒ‰é”®QPushButtonè®¾ç½®ä¿¡å·ä¸æ§½ä¹‹é—´çš„è¿æ¥ï¼š
+  1.ä½¿ç”¨QObject::connect()è¿æ¥ä¿¡å·ä¸æ§½ï¼Œå¿…é¡»è‡ªå®šä¹‰æ§½å‡½æ•°ï¼Œä¸”å¿…é¡»ä½¿ç”¨ä¸é»˜è®¤æ§½å‡½æ•°ä¸åŒçš„å‡½æ•°å
+  ä¾‹ï¼šQObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
 
-  2.Ê¹ÓÃC++11 Lambda±í´ïÊ½¡£¿ÉÒÔÖ±½ÓÔÚÁ¬½ÓµãÊ¹ÓÃÄäÃûº¯Êı£¬Ê¹´úÂë¸ü¼ò½à£¬´ËÊ±ĞÅºÅ±ØĞëÊ¹ÓÃº¯ÊıÒıÓÃ
-  Àı£ºQObject::connect(sender,&Sender::signal,[=](){ Lambdaº¯ÊıÌå });
+  2.ä½¿ç”¨C++11 Lambdaè¡¨è¾¾å¼ã€‚å¯ä»¥ç›´æ¥åœ¨è¿æ¥ç‚¹ä½¿ç”¨åŒ¿åå‡½æ•°ï¼Œä½¿ä»£ç æ›´ç®€æ´ï¼Œæ­¤æ—¶ä¿¡å·å¿…é¡»ä½¿ç”¨å‡½æ•°å¼•ç”¨
+  ä¾‹ï¼šQObject::connect(sender,&Sender::signal,[=](){ Lambdaå‡½æ•°ä½“ });
 
-  3.Ê¹ÓÃº¯ÊıÖ¸Õë£¬QT5ÖĞÒıÈë£¬¸ü°²È«ÇÒ¿ÉÀûÓÃIDEµÄ´úÂë²¹È«ºÍ´íÎó¼ì²é£»
-  Àı£ºQObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
+  3.ä½¿ç”¨å‡½æ•°æŒ‡é’ˆï¼ŒQT5ä¸­å¼•å…¥ï¼Œæ›´å®‰å…¨ä¸”å¯åˆ©ç”¨IDEçš„ä»£ç è¡¥å…¨å’Œé”™è¯¯æ£€æŸ¥ï¼›
+  ä¾‹ï¼šQObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
 
-  4.Ê¹ÓÃUIÎÄ¼ş×Ô¶¯Á¬½Ó£¬Ê¹ÓÃQT DesignerÊ±¿ÉÍ¨¹ıÃüÃûÔ¼¶¨×Ô¶¯Á¬½Ó£»µ±UIÎÄ¼ş¼ÓÔØÊ±£¬ÒÔon_<objectName>_<signal_name>ÃüÃûµÄÄ¬ÈÏ²Ûº¯Êı»á×Ô¶¯Á¬½Óµ½ÏàÓ¦ĞÅºÅ
-  Àı£ºQT DesignerÖĞÃüÃû°´Å¥ÎªpushButton£¬È»ºóÔÚ´úÂëÖĞ¶¨Òåon_pushButton_clicked()
+  4.ä½¿ç”¨UIæ–‡ä»¶è‡ªåŠ¨è¿æ¥ï¼Œä½¿ç”¨QT Designeræ—¶å¯é€šè¿‡å‘½åçº¦å®šè‡ªåŠ¨è¿æ¥ï¼›å½“UIæ–‡ä»¶åŠ è½½æ—¶ï¼Œä»¥on_<objectName>_<signal_name>å‘½åçš„é»˜è®¤æ§½å‡½æ•°ä¼šè‡ªåŠ¨è¿æ¥åˆ°ç›¸åº”ä¿¡å·
+  ä¾‹ï¼šQT Designerä¸­å‘½åæŒ‰é’®ä¸ºpushButtonï¼Œç„¶ååœ¨ä»£ç ä¸­å®šä¹‰on_pushButton_clicked()
 */
 /*
-  1.QTÖĞËùÓĞ»ùÓÚ´°¿ÚµÄÓ¦ÓÃ³ÌĞòµ×²ã¾ù½èÖúÁËÊÂ¼ş´¦Àí£¬Ä¿µÄÊÇÊµÏÖ»Øµ÷£¨Ö»ÓĞÕâÑù³ÌĞòµÄĞ§ÂÊ²ÅÊÇ×î¸ß£©£»QTÄÚ²¿Ìá¹©ÁËÊÂ¼ş´¦Àí»úÖÆ£¬
-  ¹ı³ÌÈçÏÂ ²úÉú->ÅÉ·¢->¹ıÂË->·Ö·¢->´¦Àí ËÄ¸ö½×¶Î¡£QT¶ÔÓÚÊÂ¼ş¶¼ÓĞÄ¬ÈÏµÄ´¦Àí¶¯×÷£»Èç¹ûÓĞÌØÊâĞèÇóÔòÔÚºÏÊÊ½×¶ÎÖØĞ´ÊÂ¼ş´¦Àí¶¯×÷£¨ÀıÈç×Ô¶¨ÒåĞÅºÅÓë²Û£©
+  1.QTä¸­æ‰€æœ‰åŸºäºçª—å£çš„åº”ç”¨ç¨‹åºåº•å±‚å‡å€ŸåŠ©äº†äº‹ä»¶å¤„ç†ï¼Œç›®çš„æ˜¯å®ç°å›è°ƒï¼ˆåªæœ‰è¿™æ ·ç¨‹åºçš„æ•ˆç‡æ‰æ˜¯æœ€é«˜ï¼‰ï¼›QTå†…éƒ¨æä¾›äº†äº‹ä»¶å¤„ç†æœºåˆ¶ï¼Œ
+  è¿‡ç¨‹å¦‚ä¸‹ äº§ç”Ÿ->æ´¾å‘->è¿‡æ»¤->åˆ†å‘->å¤„ç† å››ä¸ªé˜¶æ®µã€‚QTå¯¹äºäº‹ä»¶éƒ½æœ‰é»˜è®¤çš„å¤„ç†åŠ¨ä½œï¼›å¦‚æœæœ‰ç‰¹æ®Šéœ€æ±‚åˆ™åœ¨åˆé€‚é˜¶æ®µé‡å†™äº‹ä»¶å¤„ç†åŠ¨ä½œï¼ˆä¾‹å¦‚è‡ªå®šä¹‰ä¿¡å·ä¸æ§½ï¼‰
   
-  2.ÊÂ¼şÓÉÏµÍ³»òQT±¾ÉíÔÚ²»Í¬³¡¾°ÏÂ·¢³ö£»µ±ÓÃ»§°´ÏÂ¡¢ÒÆ¶¯Êó±ê£¬ÇÃ»÷¼üÅÌ£»»òÕß´°¿Ú¹Ø±Õ¡¢´óĞ¡±ä»¯¡¢Òş²ØÏÔÊ¾µÈ¶¼»á·¢³öÏàÓ¦ÊÂ¼ş¡£
-  Ò»Ğ©ÊÂ¼şÔÚ¶ÔÓÃ»§²Ù×÷×÷³öÏìÓ¦Ê±·¢³ö£¬ÈçÊó±ê¡¢¼üÅÌÊÂ¼ş£»ÁíÒ»Ğ©ÊÂ¼şÔòÊÇÓÉÏµÍ³×Ô¶¯·¢³ö£¬Èç¼ÆÊ±Æ÷ÊÂ¼ş
+  2.äº‹ä»¶ç”±ç³»ç»Ÿæˆ–QTæœ¬èº«åœ¨ä¸åŒåœºæ™¯ä¸‹å‘å‡ºï¼›å½“ç”¨æˆ·æŒ‰ä¸‹ã€ç§»åŠ¨é¼ æ ‡ï¼Œæ•²å‡»é”®ç›˜ï¼›æˆ–è€…çª—å£å…³é—­ã€å¤§å°å˜åŒ–ã€éšè—æ˜¾ç¤ºç­‰éƒ½ä¼šå‘å‡ºç›¸åº”äº‹ä»¶ã€‚
+  ä¸€äº›äº‹ä»¶åœ¨å¯¹ç”¨æˆ·æ“ä½œä½œå‡ºå“åº”æ—¶å‘å‡ºï¼Œå¦‚é¼ æ ‡ã€é”®ç›˜äº‹ä»¶ï¼›å¦ä¸€äº›äº‹ä»¶åˆ™æ˜¯ç”±ç³»ç»Ÿè‡ªåŠ¨å‘å‡ºï¼Œå¦‚è®¡æ—¶å™¨äº‹ä»¶
 
-  3.Ã¿Ò»¸öQTÓ¦ÓÃ³ÌĞò¶ÔÓ¦Ò»¸öÎ¨Ò»µÄQApplicationÓ¦ÓÃ³ÌĞò¶ÔÏó£¬µ÷ÓÃ¸Ã¶ÔÏóµÄexec()º¯Êı£¬Ôò¿ò¼ÜÄÚ²¿µÄÊÂ¼ş¼ì²â¾Í¿ªÊ¼ÁË£¬³ÌĞò½«½øÈëÊÂ¼şÑ­»·À´¼àÌıÓ¦ÓÃ³ÌĞò
+  3.æ¯ä¸€ä¸ªQTåº”ç”¨ç¨‹åºå¯¹åº”ä¸€ä¸ªå”¯ä¸€çš„QApplicationåº”ç”¨ç¨‹åºå¯¹è±¡ï¼Œè°ƒç”¨è¯¥å¯¹è±¡çš„exec()å‡½æ•°ï¼Œåˆ™æ¡†æ¶å†…éƒ¨çš„äº‹ä»¶æ£€æµ‹å°±å¼€å§‹äº†ï¼Œç¨‹åºå°†è¿›å…¥äº‹ä»¶å¾ªç¯æ¥ç›‘å¬åº”ç”¨ç¨‹åº
 
-  4.(1)¼ÙÉèµ±Ç°²úÉúÁËÒ»¸öÊÂ¼ş
-  (2)QTÊ¹ÓÃÓ¦ÓÃ³ÌĞò¶ÔÏóµ÷ÓÃnotify()º¯Êı½«ÊÂ¼şÅÉ·¢µ½Ö¸¶¨´°¿Ú bool QApplication::notify(QObject* receiver,QEvent* e)
-  (3)ÊÂ¼ş¹ıÂËÆ÷ÔÚÅÉ·¢¹ı³ÌÖĞ½øĞĞ¹ıÂË£¬Ä¬ÈÏ²»¶ÔÈÎºÎ²úÉúµÄÊÂ¼ş½øĞĞ¹ıÂË bool QObject::eventFilter(QObject* watched,QEvent* e)
-  (4)ÊÂ¼ş·¢ËÍµ½Ö¸¶¨´°¿Úºó£¬´°¿ÚµÄÊÂ¼ş·Ö·¢Æ÷¶ÔÊÕµ½µÄÊÂ¼ş½øĞĞ·Ö·¢ bool QWidget::event(QEvent* e)
-  (5)×îÖÕÊÂ¼ş´¦Àíº¯Êı½ÓÊÕÊÂ¼ş²¢´¦Àí void QWidget::mousePressEvent(QMouseEvent* e)
+  4.(1)å‡è®¾å½“å‰äº§ç”Ÿäº†ä¸€ä¸ªäº‹ä»¶
+  (2)QTä½¿ç”¨åº”ç”¨ç¨‹åºå¯¹è±¡è°ƒç”¨notify()å‡½æ•°å°†äº‹ä»¶æ´¾å‘åˆ°æŒ‡å®šçª—å£ bool QApplication::notify(QObject* receiver,QEvent* e)
+  (3)äº‹ä»¶è¿‡æ»¤å™¨åœ¨æ´¾å‘è¿‡ç¨‹ä¸­è¿›è¡Œè¿‡æ»¤ï¼Œé»˜è®¤ä¸å¯¹ä»»ä½•äº§ç”Ÿçš„äº‹ä»¶è¿›è¡Œè¿‡æ»¤ bool QObject::eventFilter(QObject* watched,QEvent* e)
+  (4)äº‹ä»¶å‘é€åˆ°æŒ‡å®šçª—å£åï¼Œçª—å£çš„äº‹ä»¶åˆ†å‘å™¨å¯¹æ”¶åˆ°çš„äº‹ä»¶è¿›è¡Œåˆ†å‘ bool QWidget::event(QEvent* e)
+  (5)æœ€ç»ˆäº‹ä»¶å¤„ç†å‡½æ•°æ¥æ”¶äº‹ä»¶å¹¶å¤„ç† void QWidget::mousePressEvent(QMouseEvent* e)
 */
 
 MyNotebook::MyNotebook(QWidget *parent)
-    : QWidget(parent),ui(new Ui::MyNotebookClass)   //ÓĞ²Î¹¹Ôìº¯ÊıÊ¹ÓÃ³õÊ¼»¯²ÎÊıÁĞ±í
+    : QWidget(parent),ui(new Ui::MyNotebookClass)   //æœ‰å‚æ„é€ å‡½æ•°ä½¿ç”¨åˆå§‹åŒ–å‚æ•°åˆ—è¡¨
 {
-    //ÉèÖÃQTDesignerÀïÃæµÄUI¹ØÁªµ½widgetÀàµÄË½ÓĞ±äÁ¿uiÀïÃæ
-	//QT Widget DesignerÖĞ½øĞĞ²Ù×÷Ö®ºó£¬°´Ctrl+BÉú³ÉĞÂµÄui_mynotebook.hÎÄ¼ş£¬±ãÓÚÔÚÆäËüµÄ.h¡¢.cppÎÄ¼şÖĞÒıÓÃ
+    //è®¾ç½®QTDesigneré‡Œé¢çš„UIå…³è”åˆ°widgetç±»çš„ç§æœ‰å˜é‡uié‡Œé¢
+	//QT Widget Designerä¸­è¿›è¡Œæ“ä½œä¹‹åï¼ŒæŒ‰Ctrl+Bç”Ÿæˆæ–°çš„ui_mynotebook.hæ–‡ä»¶ï¼Œä¾¿äºåœ¨å…¶å®ƒçš„.hã€.cppæ–‡ä»¶ä¸­å¼•ç”¨
     ui->setupUi(this);
     /*
-      ×Ô¶¨ÒåÊÂ¼ş£¬°²×°ÊÂ¼ş¹ıÂËÆ÷
+      è‡ªå®šä¹‰äº‹ä»¶ï¼Œå®‰è£…äº‹ä»¶è¿‡æ»¤å™¨
     */
-    ui->textEdit->viewport()->installEventFilter(this);  //ÎªtextEditÎÄ±¾±à¼­¿ò°²×°ÊÂ¼ş¹ıÂËÆ÷
-    //µ±´°¿Ú´óĞ¡·¢Éú±ä»¯£¬ÀïÃæµÄ²¼¾Ö²»»áËæÖ®±ä»¯£»ĞèÒªÍ¨¹ıthis->setLayout()½øĞĞÏÔÊ½ËµÃ÷£¬ÈÃ´°¿Ú±ä»¯Ê±£¬²¼¾Ö¼°Æä×Ó¿Ø¼şËæÖ®µ÷Õû
+    ui->textEdit->viewport()->installEventFilter(this);  //ä¸ºtextEditæ–‡æœ¬ç¼–è¾‘æ¡†å®‰è£…äº‹ä»¶è¿‡æ»¤å™¨
+    //å½“çª—å£å¤§å°å‘ç”Ÿå˜åŒ–ï¼Œé‡Œé¢çš„å¸ƒå±€ä¸ä¼šéšä¹‹å˜åŒ–ï¼›éœ€è¦é€šè¿‡this->setLayout()è¿›è¡Œæ˜¾å¼è¯´æ˜ï¼Œè®©çª—å£å˜åŒ–æ—¶ï¼Œå¸ƒå±€åŠå…¶å­æ§ä»¶éšä¹‹è°ƒæ•´
     this->setLayout(ui->verticalLayout);
-    //Ê¹ÓÃ´úÂëÉèÖÃUIµÄwidgetBottom¿Ø¼ş³ÉÎªË®Æ½²¼¾Ö
+    //ä½¿ç”¨ä»£ç è®¾ç½®UIçš„widgetBottomæ§ä»¶æˆä¸ºæ°´å¹³å¸ƒå±€
     ui->widgetBottom->setLayout(ui->horizontalLayout);
 
-    //Ê¹ÓÃQShortcutÀàÒıÈë·Å´ó¡¢ËõĞ¡¿ì½İ¼ü¹¦ÄÜ
+    //ä½¿ç”¨QShortcutç±»å¼•å…¥æ”¾å¤§ã€ç¼©å°å¿«æ·é”®åŠŸèƒ½
     QShortcut* shortcutOpen = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")), this);
     QShortcut* shortcutSave = new QShortcut(QKeySequence(tr("Ctrl+S", "File|Save")), this);
     QShortcut* shortcutZoomIn = new QShortcut(QKeySequence(tr("Ctrl+Shift+=", "File|Save")), this);
@@ -70,11 +70,11 @@ MyNotebook::MyNotebook(QWidget *parent)
         zoomOut();
     });
 
-    //Ê¹ÓÃ·½Ê½1Á¬½ÓQComboBoxµÄĞÅºÅÓë²Ûº¯Êı
+    //ä½¿ç”¨æ–¹å¼1è¿æ¥QComboBoxçš„ä¿¡å·ä¸æ§½å‡½æ•°
     QObject::connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(oncurrentIndexChanged(int)));
     connect(ui->textEdit, &QTextEdit::cursorPositionChanged, this, &MyNotebook::onCursorPositionChanged);
 
-    //Îª×Ô¶¨Òå°´¼üÁ¬½ÓĞÅºÅÓë²Ûº¯Êı
+    //ä¸ºè‡ªå®šä¹‰æŒ‰é”®è¿æ¥ä¿¡å·ä¸æ§½å‡½æ•°
     /*connect(ui->mybtn, &MyButton::clicked, [=]() {
         qDebug() << "MyButton is clicked.";
     });*/
@@ -82,19 +82,19 @@ MyNotebook::MyNotebook(QWidget *parent)
     
 
     /*
-      1.Ê¹ÓÃQObject::connect()Á¬½ÓĞÅºÅÓë²Û£¬ÊÇ×î³£ÓÃµÄ·½Ê½
-      Àı£ºQObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
+      1.ä½¿ç”¨QObject::connect()è¿æ¥ä¿¡å·ä¸æ§½ï¼Œæ˜¯æœ€å¸¸ç”¨çš„æ–¹å¼
+      ä¾‹ï¼šQObject::connect(sender,SIGNAL(signal()),receiver,SLOT(slot()));
     */
     //QObject::connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(on_btnClose_clickedMyself()));
     QObject::connect(ui->btnSave, SIGNAL(clicked()), this, SLOT(on_btnSave_clickedMyself()));
     /*
-      2.Ê¹ÓÃC++11 Lambda±í´ïÊ½¡£¿ÉÒÔÖ±½ÓÔÚÁ¬½ÓµãÊ¹ÓÃÄäÃûº¯Êı£¬Ê¹´úÂë¸ü¼ò½à
-      Àı£ºQObject::connect(sender,&Sender::signal,[=](){ Lambdaº¯ÊıÌå });
+      2.ä½¿ç”¨C++11 Lambdaè¡¨è¾¾å¼ã€‚å¯ä»¥ç›´æ¥åœ¨è¿æ¥ç‚¹ä½¿ç”¨åŒ¿åå‡½æ•°ï¼Œä½¿ä»£ç æ›´ç®€æ´
+      ä¾‹ï¼šQObject::connect(sender,&Sender::signal,[=](){ Lambdaå‡½æ•°ä½“ });
     */
     //QObject::connect(ui->btnSave, SIGNAL(clicked()), this, SLOT(on_btnSave_clicked()));
     QObject::connect(ui->btnClose, &QPushButton::clicked, [=]() {
         //ui->textEdit->clear();
-        //¹Ø±ÕÖ÷½çÃæÇ°£¬³öÏÖÌáÊ¾¿ò
+        //å…³é—­ä¸»ç•Œé¢å‰ï¼Œå‡ºç°æç¤ºæ¡†
         QMessageBox msgBox;
         /*msgBox.setText("The document has been modified.");
         msgBox.setInformativeText("Do you want to save your changes?");
@@ -123,22 +123,22 @@ MyNotebook::MyNotebook(QWidget *parent)
         default:
             break;
         }
-        //ÓÃqDebug()È¡´ústd::coutÊä³öµ÷ÊÔĞÅÏ¢
-        qDebug() << "btnClose°´Å¥±»°´ÏÂ¡£";
-        //this->close();  //¹Ø±Õµ±Ç°´°¿Ú
+        //ç”¨qDebug()å–ä»£std::coutè¾“å‡ºè°ƒè¯•ä¿¡æ¯
+        qDebug() << "btnCloseæŒ‰é’®è¢«æŒ‰ä¸‹ã€‚";
+        //this->close();  //å…³é—­å½“å‰çª—å£
     });
     /*
-      3.Ê¹ÓÃº¯ÊıÖ¸Õë£¬QT5ÖĞÒıÈë£¬¸ü°²È«ÇÒ¿ÉÀûÓÃIDEµÄ´úÂë²¹È«ºÍ´íÎó¼ì²é£»
-      Àı£ºQObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
-      on_xxx_clicked()£ºÊÇQPushButton°´ÏÂĞÅºÅ¶ÔÓ¦µÄÄ¬ÈÏ²Ûº¯ÊıÃû£»×Ô¶¨ÒåµÄ»°¿ÉĞ´³ÉÆäËüÃû³ÆÀıÈçon_btnOpen_clickedMyself
+      3.ä½¿ç”¨å‡½æ•°æŒ‡é’ˆï¼ŒQT5ä¸­å¼•å…¥ï¼Œæ›´å®‰å…¨ä¸”å¯åˆ©ç”¨IDEçš„ä»£ç è¡¥å…¨å’Œé”™è¯¯æ£€æŸ¥ï¼›
+      ä¾‹ï¼šQObject::connect(sender,&Sender::signal,receiver,&Receiver::slot);
+      on_xxx_clicked()ï¼šæ˜¯QPushButtonæŒ‰ä¸‹ä¿¡å·å¯¹åº”çš„é»˜è®¤æ§½å‡½æ•°åï¼›è‡ªå®šä¹‰çš„è¯å¯å†™æˆå…¶å®ƒåç§°ä¾‹å¦‚on_btnOpen_clickedMyself
     */
     QObject::connect(ui->btnOpen, &QPushButton::clicked, this, &MyNotebook::on_btnOpen_clickedMyself);
 
     /*
-      ×Ô¶¨ÒåĞÅºÅÓë²ÛµÄÁ´½Ó
+      è‡ªå®šä¹‰ä¿¡å·ä¸æ§½çš„é“¾æ¥
     */
     QObject::connect(this, SIGNAL(mySignal(int)), this, SLOT(mySlot(int)));
-    emit mySignal(100);  //·¢ÉäĞÅºÅ
+    emit mySignal(100);  //å‘å°„ä¿¡å·
 }
 
 MyNotebook::~MyNotebook()
@@ -195,11 +195,11 @@ bool MyNotebook::eventFilter(QObject* watched, QEvent* event)
 		qDebug() << "Ctrl key event filtered.";
     }*/
 
-    //·Å´óºó£¬°Ñ¹â±êÍ£ÁôÔÚÎÄ±¾ÖĞ¼äÄ³¸öÎ»ÖÃ£¬°´×¡ctrl + ¹öÂÖ£¬»áÓÅÏÈÖ´ĞĞÎÄ±¾µÄÉÏÏÂ¹ö¶¯¶ø²»ÊÇ·Å´ó»òËõĞ¡
+    //æ”¾å¤§åï¼ŒæŠŠå…‰æ ‡åœç•™åœ¨æ–‡æœ¬ä¸­é—´æŸä¸ªä½ç½®ï¼ŒæŒ‰ä½ctrl + æ»šè½®ï¼Œä¼šä¼˜å…ˆæ‰§è¡Œæ–‡æœ¬çš„ä¸Šä¸‹æ»šåŠ¨è€Œä¸æ˜¯æ”¾å¤§æˆ–ç¼©å°
     if (event->type() == QEvent::Wheel)
     {
 		qDebug() << "wheel event filtered.";
-        //C++¶¯Ì¬ÀàĞÍ×ª»»
+        //C++åŠ¨æ€ç±»å‹è½¬æ¢
 		QWheelEvent* wheelEvent = dynamic_cast<QWheelEvent*>(event);
         if (QGuiApplication::keyboardModifiers() == Qt::ControlModifier)
         {
@@ -212,7 +212,7 @@ bool MyNotebook::eventFilter(QObject* watched, QEvent* event)
             {
                 zoomOut();
 			}
-			return true; //ÊÂ¼ş¹ıÂËÆ÷´¦Àí¸ÃÊÂ¼ş£¬²»ÔÙÏòÏÂ´«µİ
+			return true; //äº‹ä»¶è¿‡æ»¤å™¨å¤„ç†è¯¥äº‹ä»¶ï¼Œä¸å†å‘ä¸‹ä¼ é€’
         }
         return false;
     }
@@ -223,160 +223,160 @@ void MyNotebook::on_btnSave_clickedMyself()
 {
     if (!file.isOpen())
     {
-        //½«ÎÄ¼ş±£´æµ½Ö¸¶¨Â·¾¶
+        //å°†æ–‡ä»¶ä¿å­˜åˆ°æŒ‡å®šè·¯å¾„
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
             "J:\\QT Codes\\MyNotebook\\untitled.txt", tr("Text Files (*.txt *.doc)"));
-        qDebug() << "Ñ¡ÔñµÄÎÄ¼şÂ·¾¶Îª£º" << fileName;
-        //ÓÃqDebug()È¡´ústd::coutÊä³öµ÷ÊÔĞÅÏ¢
-        qDebug() << "btnSave°´Å¥±»°´ÏÂ¡£";
-        //1.´ò¿ªÎÄ¼ş
+        qDebug() << "é€‰æ‹©çš„æ–‡ä»¶è·¯å¾„ä¸ºï¼š" << fileName;
+        //ç”¨qDebug()å–ä»£std::coutè¾“å‡ºè°ƒè¯•ä¿¡æ¯
+        qDebug() << "btnSaveæŒ‰é’®è¢«æŒ‰ä¸‹ã€‚";
+        //1.æ‰“å¼€æ–‡ä»¶
         file.setFileName(fileName);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            qDebug() << "ÎÄ¼ş´ò¿ªÊ§°Ü£¡";
+            qDebug() << "æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼";
             return;
         }
-        this->setWindowTitle("MyNotebook--" + fileName); //ÉèÖÃ´°¿Ú±êÌâÎª±£´æµÄÎÄ¼şÃû
+        this->setWindowTitle("MyNotebook--" + fileName); //è®¾ç½®çª—å£æ ‡é¢˜ä¸ºä¿å­˜çš„æ–‡ä»¶å
     }
-    //2.Ğ´ÈëÎÄ¼ş
-    //(1)Ê¹ÓÃfile.write()Ğ´ÈëÎÄ¼şÄÚÈİ
-    //file.write("Hello, this is example2 file.ÎÒÊÇĞ¡ÕÔ¡£\n"); //Ğ´ÈëÖĞÎÄÃ»ÎÊÌâ
-    //(2)Ê¹ÓÃQTextStreamĞ´ÈëÎÄ¼şÄÚÈİ
+    //2.å†™å…¥æ–‡ä»¶
+    //(1)ä½¿ç”¨file.write()å†™å…¥æ–‡ä»¶å†…å®¹
+    //file.write("Hello, this is example2 file.æˆ‘æ˜¯å°èµµã€‚\n"); //å†™å…¥ä¸­æ–‡æ²¡é—®é¢˜
+    //(2)ä½¿ç”¨QTextStreamå†™å…¥æ–‡ä»¶å†…å®¹
     QTextStream out(&file);
-    //out.setEncoding(QStringConverter::Encoding::Utf8); //ÉèÖÃ±àÂë¸ñÊ½£¬±ÜÃâÖĞÎÄÂÒÂë
+    //out.setEncoding(QStringConverter::Encoding::Utf8); //è®¾ç½®ç¼–ç æ ¼å¼ï¼Œé¿å…ä¸­æ–‡ä¹±ç 
     QString str = ui->comboBox->currentText();
     auto encoding = QStringConverter::encodingForName(str.toUtf8());
-    //ÒÔÏÂÊÇQT5µÄĞ´·¨
+    //ä»¥ä¸‹æ˜¯QT5çš„å†™æ³•
     //const char* c_str = str.toStdString().c_str();
-    //½«±àÂëÃû³Æ×ª»»ÎªQStringConverter::EncodingÃ¶¾ÙÖµ
+    //å°†ç¼–ç åç§°è½¬æ¢ä¸ºQStringConverter::Encodingæšä¸¾å€¼
     //auto encoding = QStringConverter::encodingForName();
-    out.setEncoding(*encoding); //¸ù¾İÑ¡ÔñµÄ±àÂë¸ñÊ½¶ÁÈ¡ÎÄ¼şÄÚÈİ£¬±ÜÃâÖĞÎÄÂÒÂë
+    out.setEncoding(*encoding); //æ ¹æ®é€‰æ‹©çš„ç¼–ç æ ¼å¼è¯»å–æ–‡ä»¶å†…å®¹ï¼Œé¿å…ä¸­æ–‡ä¹±ç 
     QString context = ui->textEdit->toPlainText();
     out << context;
 
-    //3.¹Ø±ÕÎÄ¼ş
+    //3.å…³é—­æ–‡ä»¶
     //file.close();
 }
 
 void MyNotebook::on_btnOpen_clickedMyself()
 {
-    //ÓÃqDebug()È¡´ústd::coutÊä³öµ÷ÊÔĞÅÏ¢
-    qDebug() << "btnOpen°´Å¥±»°´ÏÂ¡£";
+    //ç”¨qDebug()å–ä»£std::coutè¾“å‡ºè°ƒè¯•ä¿¡æ¯
+    qDebug() << "btnOpenæŒ‰é’®è¢«æŒ‰ä¸‹ã€‚";
 }
 
 /*
-  4.Ê¹ÓÃUIÎÄ¼ş×Ô¶¯Á¬½Ó£¬Ê¹ÓÃQT DesignerÉèÖÃºÃQPushButton£¬ÔÚÀàÊµÏÖÖĞÉùÃ÷²¢¶¨Òåon_<objectName>_<signal_name>²Ûº¯Êı£»
-  µ±UIÎÄ¼ş¼ÓÔØÊ±£¬ÒÔon_<objectName>_<signal_name>ÃüÃûµÄÄ¬ÈÏ²Ûº¯Êı»á×Ô¶¯Á¬½Óµ½ÏàÓ¦ĞÅºÅ
-  Àı£ºQT DesignerÖĞÃüÃû°´Å¥ÎªpushButton£¬È»ºóÔÚ´úÂëÖĞ¶¨Òåon_pushButton_clicked()
+  4.ä½¿ç”¨UIæ–‡ä»¶è‡ªåŠ¨è¿æ¥ï¼Œä½¿ç”¨QT Designerè®¾ç½®å¥½QPushButtonï¼Œåœ¨ç±»å®ç°ä¸­å£°æ˜å¹¶å®šä¹‰on_<objectName>_<signal_name>æ§½å‡½æ•°ï¼›
+  å½“UIæ–‡ä»¶åŠ è½½æ—¶ï¼Œä»¥on_<objectName>_<signal_name>å‘½åçš„é»˜è®¤æ§½å‡½æ•°ä¼šè‡ªåŠ¨è¿æ¥åˆ°ç›¸åº”ä¿¡å·
+  ä¾‹ï¼šQT Designerä¸­å‘½åæŒ‰é’®ä¸ºpushButtonï¼Œç„¶ååœ¨ä»£ç ä¸­å®šä¹‰on_pushButton_clicked()
 */
 void MyNotebook::on_btnOpen_clicked()
 {
-    //QFileDialogÀà£ºÎÄ¼şÑ¡Ôñ¿ò
+    //QFileDialogç±»ï¼šæ–‡ä»¶é€‰æ‹©æ¡†
     QFileDialog qFileDialog;
-    //QFileDialog::getOpenFileName()£º¾²Ì¬º¯Êı£¬µ¯³öÒ»¸öÎÄ¼şÑ¡Ôñ¶Ô»°¿ò£¬ÔÊĞíÓÃ»§Ñ¡ÔñÒ»¸öÎÄ¼ş²¢·µ»Ø¸ÃÎÄ¼şµÄÂ·¾¶
-    //(1)´ò¿ªµ¥¸öÎÄ¼şµÄÎÄ¼şÑ¡Ôñ¿ò
+    //QFileDialog::getOpenFileName()ï¼šé™æ€å‡½æ•°ï¼Œå¼¹å‡ºä¸€ä¸ªæ–‡ä»¶é€‰æ‹©å¯¹è¯æ¡†ï¼Œå…è®¸ç”¨æˆ·é€‰æ‹©ä¸€ä¸ªæ–‡ä»¶å¹¶è¿”å›è¯¥æ–‡ä»¶çš„è·¯å¾„
+    //(1)æ‰“å¼€å•ä¸ªæ–‡ä»¶çš„æ–‡ä»¶é€‰æ‹©æ¡†
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), 
      "J:\\QT Codes\\MyNotebook", tr("Text Files (*.txt)"));
 
-    //(2)´ò¿ª¶à¸öÎÄ¼şµÄÎÄ¼şÑ¡Ôñ¿ò
-    //qFileDialog.setWindowTitle("Open File"); //ÉèÖÃ¶Ô»°¿ò±êÌâ
-    //qFileDialog.setDirectory("J:\\QT Codes\\MyNotebook"); //ÉèÖÃÄ¬ÈÏ´ò¿ªÂ·¾¶
-    ////qFileDialog.setFileMode(QFileDialog::ExistingFile); //ÉèÖÃÖ»ÄÜÑ¡ÔñÒ»¸öÒÑ´æÔÚµÄÎÄ¼ş
-    //qFileDialog.setFileMode(QFileDialog::ExistingFiles);  //ÉèÖÃ¿ÉÒÔÑ¡Ôñ¶à¸öÒÑ´æÔÚµÄÎÄ¼ş
-    //qFileDialog.exec(); //ÒÔÄ£Ì¬·½Ê½ÏÔÊ¾¶Ô»°¿ò£¬×èÈûºóĞø´úÂëÖ´ĞĞ£¬Ö±µ½ÓÃ»§¹Ø±Õ¶Ô»°¿ò
-    //QStringList fileNames = qFileDialog.selectedFiles(); //·µ»ØÓÃ»§Ñ¡ÔñµÄÎÄ¼şÁĞ±í
+    //(2)æ‰“å¼€å¤šä¸ªæ–‡ä»¶çš„æ–‡ä»¶é€‰æ‹©æ¡†
+    //qFileDialog.setWindowTitle("Open File"); //è®¾ç½®å¯¹è¯æ¡†æ ‡é¢˜
+    //qFileDialog.setDirectory("J:\\QT Codes\\MyNotebook"); //è®¾ç½®é»˜è®¤æ‰“å¼€è·¯å¾„
+    ////qFileDialog.setFileMode(QFileDialog::ExistingFile); //è®¾ç½®åªèƒ½é€‰æ‹©ä¸€ä¸ªå·²å­˜åœ¨çš„æ–‡ä»¶
+    //qFileDialog.setFileMode(QFileDialog::ExistingFiles);  //è®¾ç½®å¯ä»¥é€‰æ‹©å¤šä¸ªå·²å­˜åœ¨çš„æ–‡ä»¶
+    //qFileDialog.exec(); //ä»¥æ¨¡æ€æ–¹å¼æ˜¾ç¤ºå¯¹è¯æ¡†ï¼Œé˜»å¡åç»­ä»£ç æ‰§è¡Œï¼Œç›´åˆ°ç”¨æˆ·å…³é—­å¯¹è¯æ¡†
+    //QStringList fileNames = qFileDialog.selectedFiles(); //è¿”å›ç”¨æˆ·é€‰æ‹©çš„æ–‡ä»¶åˆ—è¡¨
     //for (QString str : fileNames)
     //{
     //    qDebug() << str;
     //}
-    //ÓÃqDebug()È¡´ústd::coutÊä³öµ÷ÊÔĞÅÏ¢
-    qDebug() << "btnOpen°´Å¥±»°´ÏÂ¡£";
-    //1.´ò¿ªÎÄ¼ş
-	ui->textEdit->clear(); //Ã¿´Î´ò¿ªÎÄ¼şÇ°£¬ÏÈÇå¿ÕÎÄ±¾±à¼­¿ò
+    //ç”¨qDebug()å–ä»£std::coutè¾“å‡ºè°ƒè¯•ä¿¡æ¯
+    qDebug() << "btnOpenæŒ‰é’®è¢«æŒ‰ä¸‹ã€‚";
+    //1.æ‰“å¼€æ–‡ä»¶
+	ui->textEdit->clear(); //æ¯æ¬¡æ‰“å¼€æ–‡ä»¶å‰ï¼Œå…ˆæ¸…ç©ºæ–‡æœ¬ç¼–è¾‘æ¡†
 	file.setFileName(fileName);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        qDebug() << "ÎÄ¼ş´ò¿ªÊ§°Ü£¡";
+        qDebug() << "æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼";
         return;
     }
-	this->setWindowTitle("MyNotebook--" + fileName); //ÉèÖÃ´°¿Ú±êÌâÎª´ò¿ªµÄÎÄ¼şÃû
+	this->setWindowTitle("MyNotebook--" + fileName); //è®¾ç½®çª—å£æ ‡é¢˜ä¸ºæ‰“å¼€çš„æ–‡ä»¶å
     int size = file.size();
-    //2.¶ÁÈ¡ÎÄ¼ş
-    //char context[size];   //±ä³¤Êı×éVLA£¬²»ÊÇC++±ê×¼£¬Ä³Ğ©±àÒëÆ÷²»Ö§³Ö
-    //char* context = new char[size + 1]; //¶¯Ì¬·ÖÅäÄÚ´æ
-    //(1)Ê¹ÓÃfile.read()¶ÁÈ¡ÎÄ¼şÄÚÈİµ½contextÊı×é
+    //2.è¯»å–æ–‡ä»¶
+    //char context[size];   //å˜é•¿æ•°ç»„VLAï¼Œä¸æ˜¯C++æ ‡å‡†ï¼ŒæŸäº›ç¼–è¯‘å™¨ä¸æ”¯æŒ
+    //char* context = new char[size + 1]; //åŠ¨æ€åˆ†é…å†…å­˜
+    //(1)ä½¿ç”¨file.read()è¯»å–æ–‡ä»¶å†…å®¹åˆ°contextæ•°ç»„
     /*if(file.read(context,size)==-1)
     {
-        qDebug() << "ÎÄ¼ş¶ÁÈ¡Ê§°Ü£¡";
+        qDebug() << "æ–‡ä»¶è¯»å–å¤±è´¥ï¼";
         return;
     }
-    qDebug() << "ÎÄ¼şÄÚÈİÎª£º" << context;*/
+    qDebug() << "æ–‡ä»¶å†…å®¹ä¸ºï¼š" << context;*/
     //delete context;
 
-    //(2)Ê¹ÓÃQTextStream¶ÁÈ¡ÎÄ¼şÄÚÈİµ½QString
+    //(2)ä½¿ç”¨QTextStreamè¯»å–æ–‡ä»¶å†…å®¹åˆ°QString
     QTextStream in(&file);
-    //in.setEncoding(QStringConverter::Encoding::Utf8); //ÉèÖÃ±àÂë¸ñÊ½£¬±ÜÃâÖĞÎÄÂÒÂë
+    //in.setEncoding(QStringConverter::Encoding::Utf8); //è®¾ç½®ç¼–ç æ ¼å¼ï¼Œé¿å…ä¸­æ–‡ä¹±ç 
     
-    //ui->comboBox->currentText()£ºÊÇÒ»¸öQStringÀàĞÍ±äÁ¿£¬ĞèÒª½«Æä×ª»¯³Échar*
+    //ui->comboBox->currentText()ï¼šæ˜¯ä¸€ä¸ªQStringç±»å‹å˜é‡ï¼Œéœ€è¦å°†å…¶è½¬åŒ–æˆchar*
     QString str = ui->comboBox->currentText();
     auto encoding = QStringConverter::encodingForName(str.toUtf8());
-	//ÒÔÏÂÊÇQT5µÄĞ´·¨
+	//ä»¥ä¸‹æ˜¯QT5çš„å†™æ³•
     //const char* c_str = str.toStdString().c_str();
-	//½«±àÂëÃû³Æ×ª»»ÎªQStringConverter::EncodingÃ¶¾ÙÖµ
+	//å°†ç¼–ç åç§°è½¬æ¢ä¸ºQStringConverter::Encodingæšä¸¾å€¼
     //auto encoding = QStringConverter::encodingForName();
-	in.setEncoding(*encoding); //¸ù¾İÑ¡ÔñµÄ±àÂë¸ñÊ½¶ÁÈ¡ÎÄ¼şÄÚÈİ£¬±ÜÃâÖĞÎÄÂÒÂë
+	in.setEncoding(*encoding); //æ ¹æ®é€‰æ‹©çš„ç¼–ç æ ¼å¼è¯»å–æ–‡ä»¶å†…å®¹ï¼Œé¿å…ä¸­æ–‡ä¹±ç 
     //file.seek(0);
     while (!in.atEnd())
     {
         QString context2 = in.readLine();
         qDebug() << context2;
         qDebug() << "--------";
-		//QTextEdit¿Ø¼şÏÔÊ¾¶ÁÈ¡µÄÄÚÈİ
-		//ui->textEdit->setText(context2);    //Ö»ÄÜÉèÖÃµ¥ĞĞ£¬Ã¿´ÎÉèÖÃ¶¼»á¸²¸ÇµôÖ®Ç°µÄÄÚÈİ
-		ui->textEdit->append(context2);     //¿ÉÒÔ×·¼Ó¶àĞĞÄÚÈİ
+		//QTextEditæ§ä»¶æ˜¾ç¤ºè¯»å–çš„å†…å®¹
+		//ui->textEdit->setText(context2);    //åªèƒ½è®¾ç½®å•è¡Œï¼Œæ¯æ¬¡è®¾ç½®éƒ½ä¼šè¦†ç›–æ‰ä¹‹å‰çš„å†…å®¹
+		ui->textEdit->append(context2);     //å¯ä»¥è¿½åŠ å¤šè¡Œå†…å®¹
 
-		//×¢Òâ£º´ËÊ±ÎÄ¼ş¶ÁÖ¸ÕëÒÑµ½´ïÎÄ¼şÄ©Î²£¬ÔÙ´Î¶ÁÈ¡»á¶Á²»µ½ÄÚÈİ£¬ËùÒÔĞèÒª½«¶ÁÖ¸ÕëÖØĞÂÉèÖÃÎªÎÄ¼ş¿ªÍ·
+		//æ³¨æ„ï¼šæ­¤æ—¶æ–‡ä»¶è¯»æŒ‡é’ˆå·²åˆ°è¾¾æ–‡ä»¶æœ«å°¾ï¼Œå†æ¬¡è¯»å–ä¼šè¯»ä¸åˆ°å†…å®¹ï¼Œæ‰€ä»¥éœ€è¦å°†è¯»æŒ‡é’ˆé‡æ–°è®¾ç½®ä¸ºæ–‡ä»¶å¼€å¤´
 
     }
-    //3.¹Ø±ÕÎÄ¼ş
+    //3.å…³é—­æ–‡ä»¶
     //file.close();
 }
 
 void MyNotebook::oncurrentIndexChanged(int index)
 {
-    //ÓÃqDebug()È¡´ústd::coutÊä³öµ÷ÊÔĞÅÏ¢
-    qDebug() << "QComboBoxÑ¡Ôñ¿òµÄ²Ûº¯Êı±»µ÷ÓÃ£¬µ±Ç°Ñ¡ÔñµÄË÷ÒıÖµÎª£º" << index;
-    qDebug() << "µ±Ç°Ñ¡ÔñµÄÎÄ±¾ÄÚÈİÎª£º" << ui->comboBox->currentText();
-	ui->textEdit->clear(); //Ã¿´Î¸ü¸Ä±àÂë¸ñÊ½Ç°£¬ÏÈÇå¿ÕÎÄ±¾±à¼­¿ò
+    //ç”¨qDebug()å–ä»£std::coutè¾“å‡ºè°ƒè¯•ä¿¡æ¯
+    qDebug() << "QComboBoxé€‰æ‹©æ¡†çš„æ§½å‡½æ•°è¢«è°ƒç”¨ï¼Œå½“å‰é€‰æ‹©çš„ç´¢å¼•å€¼ä¸ºï¼š" << index;
+    qDebug() << "å½“å‰é€‰æ‹©çš„æ–‡æœ¬å†…å®¹ä¸ºï¼š" << ui->comboBox->currentText();
+	ui->textEdit->clear(); //æ¯æ¬¡æ›´æ”¹ç¼–ç æ ¼å¼å‰ï¼Œå…ˆæ¸…ç©ºæ–‡æœ¬ç¼–è¾‘æ¡†
     if (file.isOpen())
     {
 		QTextStream in(&file);
 		auto encoding = QStringConverter::encodingForName(ui->comboBox->currentText().toUtf8());
-		in.setEncoding(*encoding); //¸ù¾İÑ¡ÔñµÄ±àÂë¸ñÊ½¶ÁÈ¡ÎÄ¼şÄÚÈİ£¬±ÜÃâÖĞÎÄÂÒÂë
-        //×¢Òâ£º´ËÊ±ÎÄ¼ş¶ÁÖ¸ÕëÒÑµ½´ïÎÄ¼şÄ©Î²£¬ÔÙ´Î¶ÁÈ¡»á¶Á²»µ½ÄÚÈİ£¬ËùÒÔĞèÒª½«¶ÁÖ¸ÕëÖØĞÂÉèÖÃÎªÎÄ¼ş¿ªÍ·
+		in.setEncoding(*encoding); //æ ¹æ®é€‰æ‹©çš„ç¼–ç æ ¼å¼è¯»å–æ–‡ä»¶å†…å®¹ï¼Œé¿å…ä¸­æ–‡ä¹±ç 
+        //æ³¨æ„ï¼šæ­¤æ—¶æ–‡ä»¶è¯»æŒ‡é’ˆå·²åˆ°è¾¾æ–‡ä»¶æœ«å°¾ï¼Œå†æ¬¡è¯»å–ä¼šè¯»ä¸åˆ°å†…å®¹ï¼Œæ‰€ä»¥éœ€è¦å°†è¯»æŒ‡é’ˆé‡æ–°è®¾ç½®ä¸ºæ–‡ä»¶å¼€å¤´
         file.seek(0);
-        //ÖØĞÂÔÙ¶ÁÎÄ¼ş
+        //é‡æ–°å†è¯»æ–‡ä»¶
         while (!in.atEnd())
         {
             QString context2 = in.readLine();
-            //QTextEdit¿Ø¼şÏÔÊ¾¶ÁÈ¡µÄÄÚÈİ
-            //ui->textEdit->setText(context2);    //Ö»ÄÜÉèÖÃµ¥ĞĞ£¬Ã¿´ÎÉèÖÃ¶¼»á¸²¸ÇµôÖ®Ç°µÄÄÚÈİ
-            ui->textEdit->append(context2);     //¿ÉÒÔ×·¼Ó¶àĞĞÄÚÈİ
+            //QTextEditæ§ä»¶æ˜¾ç¤ºè¯»å–çš„å†…å®¹
+            //ui->textEdit->setText(context2);    //åªèƒ½è®¾ç½®å•è¡Œï¼Œæ¯æ¬¡è®¾ç½®éƒ½ä¼šè¦†ç›–æ‰ä¹‹å‰çš„å†…å®¹
+            ui->textEdit->append(context2);     //å¯ä»¥è¿½åŠ å¤šè¡Œå†…å®¹
         }
     }
 }
 
 void MyNotebook::zoomIn()
 {
-    //1.»ñµÃTextEditµÄµ±Ç°×ÖÌåĞÅÏ¢
+    //1.è·å¾—TextEditçš„å½“å‰å­—ä½“ä¿¡æ¯
     QFont font = ui->textEdit->font();
-    //2.»ñµÃµ±Ç°×ÖÌå´óĞ¡
+    //2.è·å¾—å½“å‰å­—ä½“å¤§å°
     int fontSize = font.pointSize();
     if (fontSize == -1)
     {
         return;
     }
-    //3.¸Ä±ä´óĞ¡£¬²¢ÉèÖÃ×ÖÌå´óĞ¡
+    //3.æ”¹å˜å¤§å°ï¼Œå¹¶è®¾ç½®å­—ä½“å¤§å°
     int newFontSize = fontSize + 1;
     font.setPointSize(newFontSize);
     ui->textEdit->setFont(font);
@@ -384,15 +384,15 @@ void MyNotebook::zoomIn()
 
 void MyNotebook::zoomOut()
 {
-    //1.»ñµÃTextEditµÄµ±Ç°×ÖÌåĞÅÏ¢
+    //1.è·å¾—TextEditçš„å½“å‰å­—ä½“ä¿¡æ¯
     QFont font = ui->textEdit->font();
-    //2.»ñµÃµ±Ç°×ÖÌå´óĞ¡
+    //2.è·å¾—å½“å‰å­—ä½“å¤§å°
     int fontSize = font.pointSize();
     if (fontSize == -1)
     {
         return;
     }
-    //3.¸Ä±ä´óĞ¡£¬²¢ÉèÖÃ×ÖÌå´óĞ¡
+    //3.æ”¹å˜å¤§å°ï¼Œå¹¶è®¾ç½®å­—ä½“å¤§å°
     int newFontSize = fontSize - 1;
     font.setPointSize(newFontSize);
     ui->textEdit->setFont(font);
@@ -402,27 +402,27 @@ void MyNotebook::onCursorPositionChanged()
 {
     QTextCursor cursor = ui->textEdit->textCursor();
     //qDebug() << " " << cursor.blockNumber() + 1 << cursor.columnNumber() + 1;
-	QString blockNum = QString::number(cursor.blockNumber() + 1);   //ĞĞºÅ
-	QString colNum = QString::number(cursor.columnNumber() + 1);   //ÁĞºÅ
+	QString blockNum = QString::number(cursor.blockNumber() + 1);   //è¡Œå·
+	QString colNum = QString::number(cursor.columnNumber() + 1);   //åˆ—å·
 	const QString labelMsg = "Row: " + blockNum + " Col: " + colNum + " ";
     ui->labelPosition->setText(labelMsg);
-    //ÉèÖÃµ±Ç°ĞĞ¸ßÁÁ
+    //è®¾ç½®å½“å‰è¡Œé«˜äº®
     QList<QTextEdit::ExtraSelection> extraSelections;
     QTextEdit::ExtraSelection ext;
-    //1.»ñÈ¡µ±Ç°ĞĞ
+    //1.è·å–å½“å‰è¡Œ
     ext.cursor = ui->textEdit->textCursor();
     QBrush qBrush(Qt::lightGray);
-    //2.ÉèÖÃÑÕÉ«
+    //2.è®¾ç½®é¢œè‰²
     ext.format.setBackground(qBrush);
-    //ÅäÖÃ¶ÎÊôĞÔ£¬ÕûĞĞÏÔÊ¾
+    //é…ç½®æ®µå±æ€§ï¼Œæ•´è¡Œæ˜¾ç¤º
     ext.format.setProperty(QTextFormat::FullWidthSelection, true);
-    //3.ÉèÖÃ£¬°Ñext¼ÓÈëµ½extµÄÈİÆ÷ÖĞ
+    //3.è®¾ç½®ï¼ŒæŠŠextåŠ å…¥åˆ°extçš„å®¹å™¨ä¸­
     extraSelections.append(ext);
     ui->textEdit->setExtraSelections(extraSelections);
 }
 
 void MyNotebook::mySlot(int val)
 {
-    //ÓÃqDebug()È¡´ústd::coutÊä³öµ÷ÊÔĞÅÏ¢
-    qDebug() << "×Ô¶¨Òå²Ûº¯ÊımySlot±»µ÷ÓÃ£¬²ÎÊıÖµÎª£º" << val;
+    //ç”¨qDebug()å–ä»£std::coutè¾“å‡ºè°ƒè¯•ä¿¡æ¯
+    qDebug() << "è‡ªå®šä¹‰æ§½å‡½æ•°mySlotè¢«è°ƒç”¨ï¼Œå‚æ•°å€¼ä¸ºï¼š" << val;
 }

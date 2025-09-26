@@ -1,4 +1,4 @@
-#include "mytextedit.h"
+﻿#include "mytextedit.h"
 #include <QDebug>
 #include <QWheelEvent>
 

@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 /*
-  Ê¹ÓÃ×Ô¶¨ÒåMyButtonÀàµÄ·½·¨£º
-  1.ÔÚQT Widget DesignerÖĞÌí¼ÓÒ»¸öWidget£¬È»ºó½«ÆäÌáÉıÎªMyButtonÀà
-  2.Ö±½Ó´Ó´úÂëµ÷ÓÃ
+  ä½¿ç”¨è‡ªå®šä¹‰MyButtonç±»çš„æ–¹æ³•ï¼š
+  1.åœ¨QT Widget Designerä¸­æ·»åŠ ä¸€ä¸ªWidgetï¼Œç„¶åå°†å…¶æå‡ä¸ºMyButtonç±»
+  2.ç›´æ¥ä»ä»£ç è°ƒç”¨
 */
 
 #include <QWidget>
@@ -18,15 +18,15 @@ public:
 	~MyButton();
 	
 protected:
-	void mousePressEvent(QMouseEvent*) override;	//ÖØĞ´Êó±ê°´ÏÂÊÂ¼ş
-	void leaveEvent(QEvent*) override;	//ÖØĞ´¹â±ê½øÈë´°¿ÚÊÂ¼ş
-	void enterEvent(QEnterEvent*) override;		//ÖØĞ´¹â±ê½øÈëÊÂ¼ş
-	void paintEvent(QPaintEvent*) override;		//ÖØĞ´»­Í¼ÊÂ¼ş
+	void mousePressEvent(QMouseEvent*) override;	//é‡å†™é¼ æ ‡æŒ‰ä¸‹äº‹ä»¶
+	void leaveEvent(QEvent*) override;	//é‡å†™å…‰æ ‡è¿›å…¥çª—å£äº‹ä»¶
+	void enterEvent(QEnterEvent*) override;		//é‡å†™å…‰æ ‡è¿›å…¥äº‹ä»¶
+	void paintEvent(QPaintEvent*) override;		//é‡å†™ç”»å›¾äº‹ä»¶
 
 private:
 	QPixmap pic;
 
 signals:
-	void clicked();	//×Ô¶¨ÒåclickedĞÅºÅ
+	void clicked();	//è‡ªå®šä¹‰clickedä¿¡å·
 };
 

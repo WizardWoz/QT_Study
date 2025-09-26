@@ -1,10 +1,10 @@
-#include "mybutton.h"
+ï»¿#include "mybutton.h"
 
 MyButton::MyButton(QWidget *parent) : QWidget(parent)
 {
-	pic.load(":/Icons/save.png");	//Ä¬ÈÏ¼ÓÔØ³õÊ¼Í¼Æ¬
-	setFixedSize(pic.size());		//ÉèÖÃ¾ØĞÎÇøÓò´óĞ¡ÓëÍ¼Æ¬ÏàÍ¬
-	update();	//´¥·¢QT¿ò¼Ü»Øµ÷paintEventÊÂ¼ş
+	pic.load(":/Icons/save.png");	//é»˜è®¤åŠ è½½åˆå§‹å›¾ç‰‡
+	setFixedSize(pic.size());		//è®¾ç½®çŸ©å½¢åŒºåŸŸå¤§å°ä¸å›¾ç‰‡ç›¸åŒ
+	update();	//è§¦å‘QTæ¡†æ¶å›è°ƒpaintEventäº‹ä»¶
 }
 
 MyButton::~MyButton()
@@ -16,12 +16,12 @@ void MyButton::mousePressEvent(QMouseEvent* event)
 {
 	pic.load(":/Icons/save.png");
 	update();
-	emit clicked();	//·¢ÉäclickedĞÅºÅ
+	emit clicked();	//å‘å°„clickedä¿¡å·
 }
 
 void MyButton::leaveEvent(QEvent* event)
 {
-	pic.load(":/Icons/±£´æ.png");
+	pic.load(":/Icons/ä¿å­˜.png");
 	update();
 }
 
@@ -33,9 +33,9 @@ void MyButton::enterEvent(QEnterEvent* event)
 
 void MyButton::paintEvent(QPaintEvent* event)
 {
-	//QPainter»æ»­Ê¦¶ÔÏó
+	//QPainterç»˜ç”»å¸ˆå¯¹è±¡
 	QPainter painter(this);
-	//ÔÚrect()º¯ÊıÊµÏÖµÄ¾ØĞÎÇøÓòÉÏ»æÖÆpicÍ¼Ïñ
+	//åœ¨rect()å‡½æ•°å®ç°çš„çŸ©å½¢åŒºåŸŸä¸Šç»˜åˆ¶picå›¾åƒ
 	painter.drawPixmap(rect(), pic);
 }
 
