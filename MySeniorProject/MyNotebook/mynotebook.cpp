@@ -196,27 +196,24 @@ bool MyNotebook::eventFilter(QObject* watched, QEvent* event)
     }*/
 
     //放大后，把光标停留在文本中间某个位置，按住ctrl + 滚轮，会优先执行文本的上下滚动而不是放大或缩小
-    if (event->type() == QEvent::Wheel)
+    // 只处理 textEdit 视口的事件
+    if (watched == ui->textEdit->viewport())
     {
-		qDebug() << "wheel event filtered.";
-        //C++动态类型转换
-		QWheelEvent* wheelEvent = dynamic_cast<QWheelEvent*>(event);
-        if (QGuiApplication::keyboardModifiers() == Qt::ControlModifier)
+        if (event->type() == QEvent::Wheel)
         {
-            qDebug() << "Ctrl+Wheel event filtered.";
-            if (wheelEvent->angleDelta().y() > 0)
+            QWheelEvent* wheelEvent = dynamic_cast<QWheelEvent*>(event);
+            if (wheelEvent && QGuiApplication::keyboardModifiers() == Qt::ControlModifier)
             {
-                zoomIn();
+                if (wheelEvent->angleDelta().y() > 0)
+                    zoomIn();
+                else
+                    zoomOut();
+                return true;
             }
-            else if (wheelEvent->angleDelta().y() < 0)
-            {
-                zoomOut();
-			}
-			return true; //事件过滤器处理该事件，不再向下传递
         }
-        return false;
     }
-    
+    // 其他事件交给基类处理
+    return QWidget::eventFilter(watched, event);
 }
 
 void MyNotebook::on_btnSave_clickedMyself()
