@@ -904,6 +904,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="btnSendContent">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>发送</string>
             </property>
