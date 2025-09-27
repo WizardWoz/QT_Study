@@ -9,6 +9,8 @@ SerialPortAssistant::SerialPortAssistant(QWidget *parent)
 {
     ui->setupUi(this);
 	this->setLayout(ui->gridLayout_Global);
+	writeCntTotal = 0;
+	readCntTotal = 0;
 	serialPort = new QSerialPort(this);
 
 	connect(serialPort, &QSerialPort::readyRead, this, &SerialPortAssistant::on_serialData_readyToRead);
@@ -34,17 +36,47 @@ SerialPortAssistant::~SerialPortAssistant()
 
 void SerialPortAssistant::on_btnSendContent_clicked()
 {
-	const char* sendData = ui->lineEdit_sendContent->text().toStdString().c_str();
-	serialPort->write(sendData);
-	qDebug() << "Send OK!" << sendData;
-	ui->textEdit_Record->append(sendData);
+	int writeCnt = 0;
+	//QT6版本开始的发送中文字符串方法
+	QString text = ui->lineEdit_sendContent->text();
+	QByteArray sendData = text.toUtf8();
+	//const char* sendData = ui->lineEdit_sendContent->text().toStdString().c_str();
+	writeCnt = serialPort->write(sendData);
+
+	if (writeCnt == -1)
+	{
+		qDebug() << "发送失败!";
+		ui->label_sendStatus->setText("Send Error!");
+	}
+	else
+	{
+		writeCntTotal += writeCnt;
+		qDebug() << "发送成功!" << text;
+		ui->textEdit_Record->append(text);
+		ui->label_sendStatus->setText("Send OK!");
+		ui->label_sendCnt->setNum(writeCntTotal);
+		if (!strcmp(text.toStdString().c_str(), sendBackup.toStdString().c_str()))
+		{
+			ui->textEdit_Record->append(text);
+			sendBackup = text;
+		}
+	}
+
 }
 
 void SerialPortAssistant::on_serialData_readyToRead()
 {
-	QString revMessage = serialPort->readAll();
-	qDebug() << "Received Message:" << revMessage;
-	ui->textEdit_Rev->append(revMessage);
+	QByteArray data = serialPort->readAll();
+	//根据发送端使用的编码解码
+	QString revMessage = QString::fromUtf8(data);
+	if (revMessage!=nullptr)
+	{
+		qDebug() << "Received Message:" << revMessage;
+		ui->textEdit_Rev->append(revMessage);
+		readCntTotal += revMessage.length();
+		ui->label_revCnt->setNum(readCntTotal);
+	}
+	
 }
 
 void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()

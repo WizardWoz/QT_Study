@@ -20,5 +20,8 @@ private slots:
 private:
     Ui::SerialPortAssistantClass* ui;
     QSerialPort* serialPort;
+	int writeCntTotal;
+	int readCntTotal;
+    QString sendBackup;
 };
 
