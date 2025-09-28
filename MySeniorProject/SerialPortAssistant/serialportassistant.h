@@ -18,6 +18,8 @@ private slots:
 	void on_btnSendContent_clicked();
     void on_serialData_readyToRead();
 	void on_checkBox_sendInTime_clicked(bool checked);
+	void on_btnRevClear_clicked();
+	void on_btnRevSave_clicked();
 
 private:
     Ui::SerialPortAssistantClass* ui;

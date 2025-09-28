@@ -4,6 +4,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QMessageBox>
+#include <QFileDialog>
 
 SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	: QWidget(parent), ui(new Ui::SerialPortAssistantClass)
@@ -108,6 +109,28 @@ void SerialPortAssistant::on_checkBox_sendInTime_clicked(bool checked)
 		sendTimer->stop();
 		ui->lineEdit_timeEpoch->setEnabled(true);
 		ui->lineEdit_sendContent->setEnabled(true);
+	}
+}
+
+void SerialPortAssistant::on_btnRevClear_clicked()
+{
+	ui->textEdit_Rev->setText("");
+}
+
+void SerialPortAssistant::on_btnRevSave_clicked()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, tr("保存接收数据"), "接收数据.txt", tr("文本文件(*.txt);;所有文件(*.*)"));
+	if (fileName!=nullptr)
+	{
+		QFile file(fileName);
+		if(!file.open(QIODevice::WriteOnly|QIODevice::Text))
+		{
+			qDebug() << "文件打开失败!";
+			return;
+		}
+		QTextStream out(&file);
+		out << ui->textEdit_Rev->toPlainText();
+		file.close();
 	}
 }
 
