@@ -18,8 +18,10 @@ private slots:
 	void on_btnSendContent_clicked();
     void on_serialData_readyToRead();
 	void on_checkBox_sendInTime_clicked(bool checked);
+	void on_checkBox_revTime_clicked(bool checked);
 	void on_btnRevClear_clicked();
 	void on_btnRevSave_clicked();
+	void time_refresh();
 
 private:
     Ui::SerialPortAssistantClass* ui;
@@ -27,7 +29,11 @@ private:
 	int writeCntTotal;
 	int readCntTotal;
     QString sendBackup;
+	QString myTime;
 	bool serialPortStatus; //串口状态
+	bool revTimeStatus; //接收时间戳状态
 	QTimer* sendTimer;   //QT自带的定时器类：定时发送数据
+
+	void getSystemTime();
 };
 

@@ -19,6 +19,11 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	serialPort = new QSerialPort(this);	//为整个窗口添加串口对象
 	sendTimer = new QTimer(this);	//为整个窗口添加定时器对象
 
+	QTimer* getSystemTimeTimer = new QTimer(this);
+	connect(getSystemTimeTimer, SIGNAL(timeout()), this, SLOT(time_refresh()));
+	time_refresh();
+	getSystemTimeTimer->start(1000);
+
 	connect(serialPort, &QSerialPort::readyRead, this, &SerialPortAssistant::on_serialData_readyToRead);
 	connect(sendTimer, &QTimer::timeout, [=]() {
 		on_btnSendContent_clicked();
@@ -66,7 +71,7 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 		//ui->label_sendCnt->setNum(writeCntTotal);
 		ui->label_sendCnt->setText("Sent: " + QString::number(writeCntTotal));
 		if (strcmp(text.toStdString().c_str(), sendBackup.toStdString().c_str())!=0)
-		{
+		{	
 			ui->textEdit_Record->append(text);
 			sendBackup = text;
 		}
@@ -86,7 +91,16 @@ void SerialPortAssistant::on_serialData_readyToRead()
 	if (revMessage != nullptr)
 	{
 		qDebug() << "Received Message:" << revMessage;
-		ui->textEdit_Rev->append(revMessage);
+		if (revTimeStatus)
+		{
+			QString new_revContent = '[' + myTime + ']' + revMessage;
+			ui->textEdit_Rev->append(new_revContent);
+		}
+		else
+		{
+			ui->textEdit_Rev->append(revMessage);
+		}
+		sendBackup = revMessage;
 		readCntTotal += revMessage.length();
 		ui->label_revCnt->setNum(readCntTotal);
 		ui->label_revCnt->setText("Received: " + QString::number(readCntTotal));
@@ -112,6 +126,19 @@ void SerialPortAssistant::on_checkBox_sendInTime_clicked(bool checked)
 	}
 }
 
+void SerialPortAssistant::on_checkBox_revTime_clicked(bool checked)
+{
+	qDebug() << "Check Box Rev Time." << checked;
+	if (checked)
+	{
+		revTimeStatus = true;
+	}
+	else
+	{
+		revTimeStatus = false;
+	}
+}
+
 void SerialPortAssistant::on_btnRevClear_clicked()
 {
 	ui->textEdit_Rev->setText("");
@@ -132,6 +159,27 @@ void SerialPortAssistant::on_btnRevSave_clicked()
 		out << ui->textEdit_Rev->toPlainText();
 		file.close();
 	}
+}
+
+void SerialPortAssistant::time_refresh()
+{
+	getSystemTime();
+	ui->label_currentTime->setText(myTime);
+}
+
+void SerialPortAssistant::getSystemTime()
+{
+	QDateTime currentTime = QDateTime::currentDateTime();
+	//QDate date = currentTime.date();
+	//int year = date.year();
+	//int month = date.month();
+	//int day = date.day();
+	//QTime time = currentTime.time();
+	//int hour = time.hour();
+	//int minute = time.minute();
+	//int second = time.second();
+	//myTime = QString("%1-%2-%3 %4:%5:%6").arg(year).arg(month).arg(day).arg(hour).arg(minute).arg(second);
+	myTime = currentTime.toString("yyyy-MM-dd hh:mm:ss");
 }
 
 void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()
