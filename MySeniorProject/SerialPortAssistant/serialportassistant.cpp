@@ -55,8 +55,34 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 	QString text = ui->lineEdit_sendContent->text();
 	QByteArray sendData = text.toUtf8();
 	//const char* sendData = ui->lineEdit_sendContent->text().toStdString().c_str();
-	writeCnt = serialPort->write(sendData);
-
+	//通过串口发送
+	if (ui->checkBox_hexSend->isChecked())
+	{
+		QString temp = ui->lineEdit_sendContent->text();
+		//判断是否为偶数位
+		QByteArray tempArray = temp.toLocal8Bit();
+		if (tempArray.size() % 2 != 0)
+		{
+			ui->label_sendStatus->setText("Error Input!");
+			return;
+		}
+		//判断是否符合16进制的格式
+		for (char c : tempArray)
+		{
+			if (!std::isdigit(c))
+			{
+				ui->label_sendStatus->setText("Error Input!");
+				return;
+			}
+		}
+		//转换为16进制格式。用户输入1变成1；拒绝变成字符1
+		QByteArray arraySend = QByteArray::fromHex(tempArray);
+		writeCnt = serialPort->write(arraySend);
+	}
+	else
+	{
+		writeCnt = serialPort->write(sendData);
+	}
 	if (writeCnt == -1)
 	{
 		qDebug() << "发送失败!";
@@ -91,18 +117,29 @@ void SerialPortAssistant::on_serialData_readyToRead()
 	if (revMessage != nullptr)
 	{
 		qDebug() << "Received Message:" << revMessage;
-		if (revTimeStatus)
+		if (ui->checkBox_hexDisplay->isChecked())
 		{
-			QString new_revContent = '[' + myTime + ']' + revMessage;
-			ui->textEdit_Rev->append(new_revContent);
+			QByteArray tempHexString = revMessage.toUtf8().toHex();
+			//原来控件上旧的内容
+			QString tempStringHex = ui->textEdit_Rev->toPlainText();//勾选了读出来就是HEX
+			tempHexString = tempStringHex.toUtf8() + tempHexString;	//把读出的旧的HEX和新收到的数据转成HEX再拼接
+			//重新显示在控件上
+			ui->textEdit_Rev->setText(QString::fromUtf8(tempHexString));
 		}
 		else
 		{
-			ui->textEdit_Rev->append(revMessage);
+			//如果接收时间的复选框被勾选，则在接收区的接受字符串之前添加时间
+			if (ui->checkBox_revTime->isChecked())
+			{
+				QString new_revContent = '[' + myTime + ']' + revMessage;
+				ui->textEdit_Rev->append(new_revContent);
+			}
+			else
+			{
+				ui->textEdit_Rev->append(revMessage);
+			}
 		}
-		sendBackup = revMessage;
 		readCntTotal += revMessage.length();
-		ui->label_revCnt->setNum(readCntTotal);
 		ui->label_revCnt->setText("Received: " + QString::number(readCntTotal));
 	}
 
@@ -126,16 +163,34 @@ void SerialPortAssistant::on_checkBox_sendInTime_clicked(bool checked)
 	}
 }
 
-void SerialPortAssistant::on_checkBox_revTime_clicked(bool checked)
+void SerialPortAssistant::on_checkBox_hexDisplay_clicked(bool checked)
 {
-	qDebug() << "Check Box Rev Time." << checked;
+	qDebug() << "Check Box Hex Display." << checked;
 	if (checked)
 	{
-		revTimeStatus = true;
+		//1.读取textEdit_Rev中的内容
+		QString temp = ui->textEdit_Rev->toPlainText();
+		//2.将内容转换为Hex十六进制
+		QByteArray qtemp = temp.toUtf8();
+		qtemp = qtemp.toHex();
+		//3.将转换后的内容重新显示在textEdit_Rev中
+		QString lastShow;
+		temp = QString::fromUtf8(qtemp);
+		for (int i = 0; i < temp.size(); i+=2)
+		{
+			lastShow += temp.mid(i, 2) + " ";
+		}
+		ui->textEdit_Rev->setText(lastShow.toUpper());
 	}
 	else
 	{
-		revTimeStatus = false;
+		//1.读取textEdit_Rev中的内容
+		QString tempHexString = ui->textEdit_Rev->toPlainText();
+		//2.将内容转换为普通字符串
+		QByteArray tempHexQByteArray = tempHexString.toUtf8();
+		QByteArray tempQByteString = QByteArray::fromHex(tempHexQByteArray);
+		//3.将转换后的内容重新显示在textEdit_Rev中
+		ui->textEdit_Rev->setText(QString::fromUtf8(tempQByteString));
 	}
 }
 
