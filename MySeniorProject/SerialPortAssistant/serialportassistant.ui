@@ -775,19 +775,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0" rowspan="2">
-           <widget class="QPushButton" name="btnCloseOrOpenSerial">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>60</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>打开串口</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="btnRevClear">
             <property name="text">
@@ -802,31 +789,37 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <widget class="QCheckBox" name="checkBox_hexDisplay">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="btnRevSave">
             <property name="text">
-             <string>HEX显示</string>
+             <string>保存接收</string>
             </property>
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="btnRunMode">
-            <property name="text">
-             <string>运行模式</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="5">
            <widget class="QPushButton" name="btnHidePanel">
             <property name="text">
              <string>隐藏面板</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="btnRevSave">
+          <item row="1" column="4">
+           <widget class="QPushButton" name="btnHideHistory">
             <property name="text">
-             <string>保存接收</string>
+             <string>隐藏历史</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" rowspan="2">
+           <widget class="QPushButton" name="btnCloseOrOpenSerial">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>打开串口</string>
             </property>
            </widget>
           </item>
@@ -837,17 +830,10 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QPushButton" name="btnDownloadMode">
+          <item row="0" column="3">
+           <widget class="QCheckBox" name="checkBox_hexDisplay">
             <property name="text">
-             <string>下载模式</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="5">
-           <widget class="QPushButton" name="btnHideHistory">
-            <property name="text">
-             <string>隐藏历史</string>
+             <string>HEX显示</string>
             </property>
            </widget>
           </item>
@@ -895,13 +881,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
-           <widget class="QCheckBox" name="checkBox_formatInput">
-            <property name="text">
-             <string>格式输入</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="btnSendContent">
             <property name="enabled">
@@ -916,6 +895,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
            <widget class="QLineEdit" name="lineEdit_sendContent">
             <property name="text">
              <string>Hello, This is Mr. Zhao.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QCheckBox" name="checkBox_formatInput">
+            <property name="text">
+             <string>格式输入</string>
             </property>
            </widget>
           </item>

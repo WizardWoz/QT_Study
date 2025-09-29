@@ -11,18 +11,24 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 {
 	ui->setupUi(this);
 	this->setLayout(ui->gridLayout_Global);
+	//控制参数初始化
 	writeCntTotal = 0;
 	readCntTotal = 0;
 	serialPortStatus = false;
+	//控件状态初始化
 	ui->btnSendContent->setEnabled(false);
 	ui->checkBox_sendInTime->setEnabled(false);
+	ui->checkBox_sendNewLine->setEnabled(false);
+	ui->checkBox_hexSend->setEnabled(false);
+	ui->checkBox_formatInput->setEnabled(false);
+
 	serialPort = new QSerialPort(this);	//为整个窗口添加串口对象
-	sendTimer = new QTimer(this);	//为整个窗口添加定时器对象
 
 	QTimer* getSystemTimeTimer = new QTimer(this);
 	connect(getSystemTimeTimer, SIGNAL(timeout()), this, SLOT(time_refresh()));
 	time_refresh();
 	getSystemTimeTimer->start(1000);
+	sendTimer = new QTimer(this);	//为整个窗口添加定时器对象
 
 	connect(serialPort, &QSerialPort::readyRead, this, &SerialPortAssistant::on_serialData_readyToRead);
 	connect(sendTimer, &QTimer::timeout, [=]() {
@@ -40,6 +46,7 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 		qDebug() << serialInfo.portName();
 		ui->comboBox_serialNum->addItem(serialInfo.portName());
 	}
+	ui->label_sendStatus->setText(ui->comboBox_serialNum->itemText(0) + " Not Open");
 }
 
 SerialPortAssistant::~SerialPortAssistant()
@@ -55,12 +62,12 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 	QString text = ui->lineEdit_sendContent->text();
 	QByteArray sendData = text.toUtf8();
 	//const char* sendData = ui->lineEdit_sendContent->text().toStdString().c_str();
-	//通过串口发送
+	//如果是发送HEX 16进制数据
 	if (ui->checkBox_hexSend->isChecked())
 	{
 		QString temp = ui->lineEdit_sendContent->text();
 		//判断是否为偶数位
-		QByteArray tempArray = temp.toLocal8Bit();
+		QByteArray tempArray = temp.toUtf8();
 		if (tempArray.size() % 2 != 0)
 		{
 			ui->label_sendStatus->setText("Error Input!");
@@ -75,14 +82,30 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 				return;
 			}
 		}
+		if (ui->checkBox_sendNewLine->isChecked())
+		{
+			tempArray.append("\r\n");
+		}
 		//转换为16进制格式。用户输入1变成1；拒绝变成字符1
 		QByteArray arraySend = QByteArray::fromHex(tempArray);
 		writeCnt = serialPort->write(arraySend);
 	}
+	//如果不是发送HEX 16进制数据
 	else
 	{
-		writeCnt = serialPort->write(sendData);
+		//判断是否发送新行
+		if (ui->checkBox_sendNewLine->isChecked())
+		{
+			QByteArray arraySendData(sendData, strlen(sendData));
+			arraySendData.append("\r\n");
+			writeCnt = serialPort->write(arraySendData);
+		}
+		else
+		{
+			writeCnt = serialPort->write(sendData);
+		}
 	}
+
 	if (writeCnt == -1)
 	{
 		qDebug() << "发送失败!";
@@ -91,7 +114,7 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 	else
 	{
 		writeCntTotal += writeCnt;
-		qDebug() << "发送成功!" << text;
+		qDebug() << "发送成功！" << text << "；发送字节数：" << writeCnt;
 		ui->textEdit_Record->append(text);
 		ui->label_sendStatus->setText("Send OK!");
 		//ui->label_sendCnt->setNum(writeCntTotal);
@@ -103,7 +126,7 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 		}
 	}
 	/*
-	  为什么选择COM1串口只能看到发送数据，而看不到接收.数据？
+	  为什么选择COM1串口只能看到发送数据，而看不到接收数据？
 	  是因为COM1串口通常是计算机的内置串口，很多计算机并没有实际连接到任何外部设备，所以即使你发送数据，也没有设备来回应或发送数据回来
 	  况且COM1串口TX与RX引脚还未短接，所以无法实现数据的回环；而COM4串口插入了USB转TTL模块，模块的TX与RX引脚短接，所以可以实现数据的回环
 	*/
@@ -114,29 +137,35 @@ void SerialPortAssistant::on_serialData_readyToRead()
 	QByteArray data = serialPort->readAll();
 	//根据发送端使用的编码解码
 	QString revMessage = QString::fromUtf8(data);
+	qDebug() << "revCnt：" << revMessage.size() << "Received Message:" << revMessage;
 	if (revMessage != nullptr)
 	{
-		qDebug() << "Received Message:" << revMessage;
+		if (ui->checkBox_autoChangeLine->isChecked())
+		{
+			revMessage.append("\r\n");
+		}
+		//如果接收区是HEX 16进制显示模式
 		if (ui->checkBox_hexDisplay->isChecked())
 		{
-			QByteArray tempHexString = revMessage.toUtf8().toHex();
+			QByteArray tempHexString = revMessage.toUtf8().toHex().toUpper();
 			//原来控件上旧的内容
 			QString tempStringHex = ui->textEdit_Rev->toPlainText();//勾选了读出来就是HEX
 			tempHexString = tempStringHex.toUtf8() + tempHexString;	//把读出的旧的HEX和新收到的数据转成HEX再拼接
 			//重新显示在控件上
 			ui->textEdit_Rev->setText(QString::fromUtf8(tempHexString));
 		}
+		//如果接收区不是HEX 16进制显示模式
 		else
 		{
 			//如果接收时间的复选框被勾选，则在接收区的接受字符串之前添加时间
-			if (ui->checkBox_revTime->isChecked())
+			if (ui->checkBox_revTime->checkState() == Qt::Checked)
 			{
 				QString new_revContent = '[' + myTime + ']' + revMessage;
-				ui->textEdit_Rev->append(new_revContent);
+				ui->textEdit_Rev->insertPlainText(new_revContent);
 			}
-			else
+			else if (ui->checkBox_revTime->checkState() == Qt::Unchecked)
 			{
-				ui->textEdit_Rev->append(revMessage);
+				ui->textEdit_Rev->insertPlainText(revMessage);
 			}
 		}
 		readCntTotal += revMessage.length();
@@ -296,6 +325,10 @@ void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()
 			ui->btnCloseOrOpenSerial->setText("关闭串口");
 			ui->btnSendContent->setEnabled(true);
 			ui->checkBox_sendInTime->setEnabled(true);
+			ui->checkBox_sendNewLine->setEnabled(true);
+			ui->checkBox_hexSend->setEnabled(true);
+			ui->checkBox_formatInput->setEnabled(true);
+			ui->label_sendStatus->setText(ui->comboBox_serialNum->currentText() + " is Opened!");
 			serialPortStatus = true;
 		}
 		else
@@ -310,6 +343,7 @@ void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()
 	//串口已被打开
 	else
 	{
+		//关闭串口后，设置各个控件的使能，恢复可配置状态
 		serialPort->close();
 		ui->btnCloseOrOpenSerial->setText("打开串口");
 		ui->comboBox_dataBit->setEnabled(true);
@@ -322,6 +356,10 @@ void SerialPortAssistant::on_btnCloseOrOpenSerial_clicked()
 		ui->btnSendContent->setEnabled(false);
 		ui->checkBox_sendInTime->setEnabled(false);
 		ui->checkBox_sendInTime->setCheckState(Qt::Unchecked);
+		ui->checkBox_sendNewLine->setEnabled(false);
+		ui->checkBox_hexSend->setEnabled(false);
+		ui->checkBox_formatInput->setEnabled(false);
+		ui->label_sendStatus->setText(ui->comboBox_serialNum->currentText() + " is Closed!");
 		sendTimer->stop();
 	}
 
