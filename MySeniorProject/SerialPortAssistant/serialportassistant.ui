@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>709</width>
+    <width>730</width>
     <height>705</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>710</width>
+     <width>731</width>
      <height>706</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_Global">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_Up" stretch="4,3,3">
+     <layout class="QHBoxLayout" name="horizontalLayout_Up" stretch="4,4,3">
       <item>
        <widget class="QGroupBox" name="groupBox_Rev">
         <property name="title">
@@ -474,7 +474,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_serialNum">
+             <widget class="MyComboBox" name="comboBox_serialNum">
               <property name="minimumSize">
                <size>
                 <width>90</width>
@@ -801,12 +801,18 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <property name="text">
              <string>隐藏面板</string>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="1" column="4">
            <widget class="QPushButton" name="btnHideHistory">
             <property name="text">
              <string>隐藏历史</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -949,6 +955,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">mycombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="serialportassistant.qrc"/>
  </resources>

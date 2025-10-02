@@ -7,6 +7,7 @@
 
 class SerialPortAssistant : public QWidget
 {
+	//让整个类具备信号与槽的功能
     Q_OBJECT
 
 public:
@@ -17,11 +18,14 @@ private slots:
     void on_btnCloseOrOpenSerial_clicked();
 	void on_btnSendContent_clicked();
     void on_serialData_readyToRead();
+	void on_btnHidePanel_clicked(bool checked);
+	void on_btnHideHistory_clicked(bool checked);
 	void on_checkBox_sendInTime_clicked(bool checked);
 	void on_checkBox_hexDisplay_clicked(bool checked);
 	void on_btnRevClear_clicked();
 	void on_btnRevSave_clicked();
 	void time_refresh();
+	void refreshSerialName();
 
 private:
     Ui::SerialPortAssistantClass* ui;

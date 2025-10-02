@@ -5,6 +5,7 @@
 #include <QSerialPortInfo>
 #include <QMessageBox>
 #include <QFileDialog>
+#include "mycombobox.h"
 
 SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	: QWidget(parent), ui(new Ui::SerialPortAssistantClass)
@@ -35,17 +36,15 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 		on_btnSendContent_clicked();
 	});
 
+	//连接自定义的下拉框类
+	connect(ui->comboBox_serialNum, &MyComboBox::refresh, this, &SerialPortAssistant::refreshSerialName);
+
 	ui->comboBox_baudRate->setCurrentIndex(6);
 	ui->comboBox_dataBit->setCurrentIndex(3);
 	ui->btnSendContent->setEnabled(false);
 
-	QList<QSerialPortInfo> serialList = QSerialPortInfo::availablePorts();
-	//C++迭代器遍历，将可用的串口号添加到下拉框中
-	for (QSerialPortInfo serialInfo : serialList)
-	{
-		qDebug() << serialInfo.portName();
-		ui->comboBox_serialNum->addItem(serialInfo.portName());
-	}
+	refreshSerialName();
+	
 	ui->label_sendStatus->setText(ui->comboBox_serialNum->itemText(0) + " Not Open");
 }
 
@@ -174,6 +173,43 @@ void SerialPortAssistant::on_serialData_readyToRead()
 
 }
 
+void SerialPortAssistant::on_btnHidePanel_clicked(bool checked)
+{
+	if (checked)
+	{
+		qDebug() << checked << "值";
+		ui->btnHidePanel->setText("显示面板");
+		//ui->groupBox_Texts->setVisible(false);
+		ui->groupBox_Texts->hide();
+	}
+	else
+	{
+		qDebug() << checked << "值";
+		ui->btnHidePanel->setText("隐藏面板");
+		//ui->groupBox_Texts->setVisible(true);
+		ui->groupBox_Texts->show();
+	}
+}
+
+void SerialPortAssistant::on_btnHideHistory_clicked(bool checked)
+{
+	if (checked)
+	{
+		qDebug() << checked << "值";
+		ui->btnHideHistory->setText("显示历史");
+		//ui->groupBox_Record->setVisible(false);
+		ui->groupBox_Record->hide();
+	}
+	else
+	{
+		qDebug() << checked << "值";
+		ui->btnHideHistory->setText("隐藏历史");
+		//ui->groupBox_Record->setVisible(true);
+		ui->groupBox_Record->show();
+	}
+}
+
+
 void SerialPortAssistant::on_checkBox_sendInTime_clicked(bool checked)
 {
 	qDebug() << "Check Box Send In Time." << checked;
@@ -249,6 +285,21 @@ void SerialPortAssistant::time_refresh()
 {
 	getSystemTime();
 	ui->label_currentTime->setText(myTime);
+}
+
+void SerialPortAssistant::refreshSerialName()
+{
+	//每次刷新前，先清空下拉框中的内容
+	ui->comboBox_serialNum->clear();
+	//检测系统可用串口，并更新到comboBox_serialNum下拉框中供用户选择
+	QList<QSerialPortInfo> serialList = QSerialPortInfo::availablePorts();
+	//C++迭代器遍历，将可用的串口号添加到下拉框中
+	for (QSerialPortInfo serialInfo : serialList)
+	{
+		qDebug() << serialInfo.portName();
+		ui->comboBox_serialNum->addItem(serialInfo.portName());
+	}
+	ui->label_sendStatus->setText("COM Refreshed!");
 }
 
 void SerialPortAssistant::getSystemTime()
