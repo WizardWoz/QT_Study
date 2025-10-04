@@ -46,6 +46,20 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	refreshSerialName();
 	
 	ui->label_sendStatus->setText(ui->comboBox_serialNum->itemText(0) + " Not Open");
+
+	QList<QPushButton*> buttons;
+	for (int i = 1; i <= 9; i++)
+	{
+		QString btnName = QString("pushButton_%1").arg(i);
+		//findChild只能找到直接子控件，不能找到孙子控件；无需使用ui->centralwidget->
+		QPushButton* btn = findChild<QPushButton*>(btnName);
+		if (btn)
+		{
+			btn->setProperty("buttonId", i); // 设置自定义属性
+			buttons.append(btn);
+			connect(btn, SIGNAL(clicked()), this, SLOT(on_command_button_clicked()));
+		}
+	}
 }
 
 SerialPortAssistant::~SerialPortAssistant()
@@ -75,7 +89,7 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 		//判断是否符合16进制的格式
 		for (char c : tempArray)
 		{
-			if (!std::isdigit(c))
+			if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')))
 			{
 				ui->label_sendStatus->setText("Error Input!");
 				return;
@@ -114,7 +128,7 @@ void SerialPortAssistant::on_btnSendContent_clicked()
 	{
 		writeCntTotal += writeCnt;
 		qDebug() << "发送成功！" << text << "；发送字节数：" << writeCnt;
-		ui->textEdit_Record->append(text);
+		//ui->textEdit_Record->append(text);
 		ui->label_sendStatus->setText("Send OK!");
 		//ui->label_sendCnt->setNum(writeCntTotal);
 		ui->label_sendCnt->setText("Sent: " + QString::number(writeCntTotal));
@@ -136,7 +150,7 @@ void SerialPortAssistant::on_serialData_readyToRead()
 	QByteArray data = serialPort->readAll();
 	//根据发送端使用的编码解码
 	QString revMessage = QString::fromUtf8(data);
-	qDebug() << "revCnt：" << revMessage.size() << "Received Message:" << revMessage;
+	qDebug() << "revCnt：" << data.size() << "Received Message:" << revMessage;
 	if (revMessage != nullptr)
 	{
 		if (ui->checkBox_autoChangeLine->isChecked())
@@ -167,7 +181,7 @@ void SerialPortAssistant::on_serialData_readyToRead()
 				ui->textEdit_Rev->insertPlainText(revMessage);
 			}
 		}
-		readCntTotal += revMessage.length();
+		readCntTotal += data.size();
 		ui->label_revCnt->setText("Received: " + QString::number(readCntTotal));
 	}
 
@@ -278,6 +292,30 @@ void SerialPortAssistant::on_btnRevSave_clicked()
 		QTextStream out(&file);
 		out << ui->textEdit_Rev->toPlainText();
 		file.close();
+	}
+}
+
+void SerialPortAssistant::on_command_button_clicked()
+{
+	QPushButton* btn = qobject_cast<QPushButton*>(sender());
+	if (btn)
+	{
+		int num = btn->property("buttonId").toInt();
+		qDebug() << "Button " << num << " clicked!";
+		QString lineEditName = QString("lineEdit_%1").arg(num);
+		QLineEdit* lineEdit = findChild<QLineEdit*>(lineEditName);
+		if (lineEdit)
+		{
+			ui->lineEdit_sendContent->setText(lineEdit->text());
+		}
+
+		QString checkBoxName = QString("checkBox_%1").arg(num);
+		QCheckBox* checkBox = findChild<QCheckBox*>(checkBoxName);
+		if (checkBox)
+		{
+			ui->checkBox_hexSend->setChecked(checkBox->isChecked());
+		}
+		on_btnSendContent_clicked();
 	}
 }
 

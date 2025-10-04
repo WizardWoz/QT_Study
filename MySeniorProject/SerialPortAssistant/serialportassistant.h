@@ -24,6 +24,7 @@ private slots:
 	void on_checkBox_hexDisplay_clicked(bool checked);
 	void on_btnRevClear_clicked();
 	void on_btnRevSave_clicked();
+	void on_command_button_clicked();
 	void time_refresh();
 	void refreshSerialName();
 
