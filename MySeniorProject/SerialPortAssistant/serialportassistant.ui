@@ -411,7 +411,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox"/>
+            <widget class="QSpinBox" name="spinBox">
+             <property name="maximum">
+              <number>10000</number>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QLabel" name="label_4">

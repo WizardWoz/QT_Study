@@ -5,6 +5,7 @@
 #include <QSerialPortInfo>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QThread>
 #include "mycombobox.h"
 
 SerialPortAssistant::SerialPortAssistant(QWidget* parent)
@@ -16,6 +17,7 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	writeCntTotal = 0;
 	readCntTotal = 0;
 	serialPortStatus = false;
+	buttonIdx = 0;
 	//控件状态初始化
 	ui->btnSendContent->setEnabled(false);
 	ui->checkBox_sendInTime->setEnabled(false);
@@ -30,6 +32,13 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	time_refresh();
 	getSystemTimeTimer->start(1000);
 	sendTimer = new QTimer(this);	//为整个窗口添加定时器对象
+
+	buttonsConTimer = new QTimer(this);
+	connect(buttonsConTimer, &QTimer::timeout, this, &SerialPortAssistant::buttons_handler);
+
+	//使用线程的方式而不是定时器QTimer
+	mythread = new CustomThread(this);
+	connect(mythread, &CustomThread::threadTimeout, this, &SerialPortAssistant::buttons_handler);
 
 	connect(serialPort, &QSerialPort::readyRead, this, &SerialPortAssistant::on_serialData_readyToRead);
 	connect(sendTimer, &QTimer::timeout, [=]() {
@@ -47,7 +56,7 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 	
 	ui->label_sendStatus->setText(ui->comboBox_serialNum->itemText(0) + " Not Open");
 
-	QList<QPushButton*> buttons;
+	
 	for (int i = 1; i <= 9; i++)
 	{
 		QString btnName = QString("pushButton_%1").arg(i);
@@ -273,6 +282,36 @@ void SerialPortAssistant::on_checkBox_hexDisplay_clicked(bool checked)
 	}
 }
 
+void SerialPortAssistant::on_checkBox_send_clicked(bool checked)
+{
+	if (checked)
+	{
+		ui->spinBox->setEnabled(false);
+		buttonsConTimer->start(ui->spinBox->text().toUInt());
+		//mythread->start();
+	}
+	else
+	{
+		ui->spinBox->setEnabled(true);
+		buttonsConTimer->stop();
+		//mythread->terminate();
+	}
+}
+
+void SerialPortAssistant::buttons_handler()
+{
+	if (buttonIdx < buttons.size())
+	{
+		QPushButton* btnTemp = buttons[buttonIdx];
+		emit btnTemp->clicked();
+		buttonIdx++;
+	}
+	else
+	{
+		buttonIdx = 0;
+	}
+}
+
 void SerialPortAssistant::on_btnRevClear_clicked()
 {
 	ui->textEdit_Rev->setText("");
@@ -306,6 +345,10 @@ void SerialPortAssistant::on_command_button_clicked()
 		QLineEdit* lineEdit = findChild<QLineEdit*>(lineEditName);
 		if (lineEdit)
 		{
+			if (lineEdit->text().size() <= 0)
+			{
+				return;
+			}
 			ui->lineEdit_sendContent->setText(lineEdit->text());
 		}
 

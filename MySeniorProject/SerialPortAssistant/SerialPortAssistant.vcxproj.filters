@@ -49,9 +49,15 @@
     <ClCompile Include="mycombobox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="customthread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mycombobox.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="customthread.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

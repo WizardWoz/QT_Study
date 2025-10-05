@@ -117,6 +117,7 @@
     <QtRcc Include="serialportassistant.qrc" />
     <QtUic Include="serialportassistant.ui" />
     <QtMoc Include="serialportassistant.h" />
+    <ClCompile Include="customthread.cpp" />
     <ClCompile Include="mycombobox.cpp" />
     <ClCompile Include="serialportassistant.cpp" />
     <ClCompile Include="main.cpp" />
@@ -125,6 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mycombobox.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="customthread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
