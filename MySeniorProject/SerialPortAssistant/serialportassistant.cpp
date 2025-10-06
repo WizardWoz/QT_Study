@@ -200,8 +200,11 @@ void SerialPortAssistant::on_serialData_readyToRead()
 		}
 		readCntTotal += data.size();
 		ui->label_revCnt->setText("Received: " + QString::number(readCntTotal));
-	}
 
+		ui->textEdit_Rev->moveCursor(QTextCursor::End);
+		ui->textEdit_Rev->ensureCursorVisible();
+		//ui->textEdit_Rev->setFocus();
+	}
 }
 
 void SerialPortAssistant::on_btnHidePanel_clicked(bool checked)
@@ -287,6 +290,8 @@ void SerialPortAssistant::on_checkBox_hexDisplay_clicked(bool checked)
 		//3.将转换后的内容重新显示在textEdit_Rev中
 		ui->textEdit_Rev->setText(QString::fromUtf8(tempQByteString));
 	}
+	ui->textEdit_Rev->moveCursor(QTextCursor::End);
+	ui->textEdit_Rev->ensureCursorVisible();
 }
 
 void SerialPortAssistant::on_checkBox_send_clicked(bool checked)
@@ -371,7 +376,7 @@ void SerialPortAssistant::on_btnReset_clicked()
 
 void SerialPortAssistant::on_btnSave_clicked()
 {
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "./", tr("Text (*.txt)"));
+	QString fileName = QFileDialog::getSaveFileName(this, tr("保存文件"), "./", tr("文本类型 (*.txt)"));
 	QFile file(fileName);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
@@ -383,6 +388,38 @@ void SerialPortAssistant::on_btnSave_clicked()
 		out << checkBoxes[i]->isChecked() << ',' << lineEdits[i]->text() << '\n';
 	}
 	file.close();
+}
+
+void SerialPortAssistant::on_btnLoad_clicked()
+{
+	int i = 0;
+	QString fileName = QFileDialog::getOpenFileName(this, tr("打开文件"), "./", tr("文本类型 (*.txt)"));
+	if (fileName != nullptr)
+	{
+		QFile file(fileName);
+		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			return;
+		}
+		QTextStream in(&file);
+		while (!in.atEnd() && i < 9)
+		{
+			QString line = in.readLine();
+			// 找到第一个逗号的位置
+			int firstCommaIndex = line.indexOf(',');
+			if (firstCommaIndex != -1)
+			{
+				// 第一部分是复选框状态（从开始到第一个逗号）
+				QString checkState = line.left(firstCommaIndex);
+				// 第二部分是实际内容（从第一个逗号之后开始）
+				QString content = line.mid(firstCommaIndex + 1);
+
+				checkBoxes[i]->setChecked(checkState.toInt());
+				lineEdits[i]->setText(content);
+			}
+			i++;
+		}
+	}
 }
 
 void SerialPortAssistant::on_command_button_clicked()

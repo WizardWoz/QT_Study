@@ -24,6 +24,7 @@ private slots:
 	void on_btnRevSave_clicked();
 	void on_btnReset_clicked();
 	void on_btnSave_clicked();
+	void on_btnLoad_clicked();
 	void on_command_button_clicked();
 	void on_btnHidePanel_clicked(bool checked);
 	void on_btnHideHistory_clicked(bool checked);
