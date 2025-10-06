@@ -42,7 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.8.3_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;widgets;serialbus</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -95,8 +95,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
@@ -116,19 +117,41 @@
   <ItemGroup>
     <QtRcc Include="serialportassistant.qrc" />
     <QtUic Include="serialportassistant.ui" />
-    <QtMoc Include="serialportassistant.h" />
-    <ClCompile Include="customthread.cpp" />
-    <ClCompile Include="mycombobox.cpp" />
-    <ClCompile Include="serialportassistant.cpp" />
-    <ClCompile Include="main.cpp" />
+    <QtMoc Include="serialportassistant.h">
+      <PrependInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PrependInclude)</PrependInclude>
+    </QtMoc>
+    <ClCompile Include="customthread.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="mycombobox.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="serialportassistant.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <None Include="SerialPortAssistant.ico" />
     <ResourceCompile Include="SerialPortAssistant.rc" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="mycombobox.h" />
+    <QtMoc Include="mycombobox.h">
+      <PrependInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PrependInclude)</PrependInclude>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="customthread.h" />
+    <QtMoc Include="customthread.h">
+      <PrependInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PrependInclude)</PrependInclude>
+    </QtMoc>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
