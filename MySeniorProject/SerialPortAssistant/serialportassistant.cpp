@@ -68,6 +68,14 @@ SerialPortAssistant::SerialPortAssistant(QWidget* parent)
 			buttons.append(btn);
 			connect(btn, SIGNAL(clicked()), this, SLOT(on_command_button_clicked()));
 		}
+
+		QString lineEditName = QString("lineEdit_%1").arg(i);
+		QLineEdit* lineEdit = findChild<QLineEdit*>(lineEditName);
+		lineEdits.append(lineEdit);
+
+		QString checkBoxName = QString("checkBox_%1").arg(i);
+		QCheckBox* checkBox = findChild<QCheckBox*>(checkBoxName);
+		checkBoxes.append(checkBox);
 	}
 }
 
@@ -232,7 +240,6 @@ void SerialPortAssistant::on_btnHideHistory_clicked(bool checked)
 	}
 }
 
-
 void SerialPortAssistant::on_checkBox_sendInTime_clicked(bool checked)
 {
 	qDebug() << "Check Box Send In Time." << checked;
@@ -332,6 +339,50 @@ void SerialPortAssistant::on_btnRevSave_clicked()
 		out << ui->textEdit_Rev->toPlainText();
 		file.close();
 	}
+}
+
+void SerialPortAssistant::on_btnReset_clicked()
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("提示");
+	msgBox.setIcon(QMessageBox::Question);
+	msgBox.setText("重置列表不可逆，确认是否重置？");
+	//msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	QPushButton* yesButton = msgBox.addButton("是", QMessageBox::YesRole);
+	QPushButton* noButton = msgBox.addButton("否", QMessageBox::NoRole);
+	msgBox.exec();
+	if (msgBox.clickedButton()==yesButton)
+	{
+		qDebug() << "Yes Button";
+		//遍历所有的lineEdit和checkBox，清空lineEdit，取消checkBox的选中状态
+		for (int i = 0; i < lineEdits.size(); i++)
+		{
+			//遍历lineEdit并清空内容
+			lineEdits[i]->clear();
+			//遍历checkBox并取消勾选
+			checkBoxes[i]->setChecked(false);
+		}
+	}
+	if (msgBox.clickedButton()==noButton)
+	{
+		qDebug() << "No Button";
+	}
+}
+
+void SerialPortAssistant::on_btnSave_clicked()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "./", tr("Text (*.txt)"));
+	QFile file(fileName);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		return;
+	}
+	QTextStream out(&file);
+	for (int i = 0; i < lineEdits.size(); i++)
+	{
+		out << checkBoxes[i]->isChecked() << ',' << lineEdits[i]->text() << '\n';
+	}
+	file.close();
 }
 
 void SerialPortAssistant::on_command_button_clicked()

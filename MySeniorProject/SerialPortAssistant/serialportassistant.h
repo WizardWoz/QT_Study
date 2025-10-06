@@ -22,6 +22,8 @@ private slots:
     void on_serialData_readyToRead();
 	void on_btnRevClear_clicked();
 	void on_btnRevSave_clicked();
+	void on_btnReset_clicked();
+	void on_btnSave_clicked();
 	void on_command_button_clicked();
 	void on_btnHidePanel_clicked(bool checked);
 	void on_btnHideHistory_clicked(bool checked);
@@ -44,6 +46,8 @@ private:
 	QTimer* sendTimer;   //QT自带的定时器类：定时发送数据
 	QTimer* buttonsConTimer; //按钮连续发送定时器
 	QList<QPushButton*> buttons;
+	QList<QLineEdit*> lineEdits;
+	QList<QCheckBox*> checkBoxes;
 	CustomThread* mythread;
 
 	void getSystemTime();
